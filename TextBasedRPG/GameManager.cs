@@ -15,42 +15,41 @@ namespace TextBasedRPG.Heroes
         RegionBoss,
         Exit    
     }
-    public class GameManager
+    #region Game Menus
+    
+    public interface IMenuState
     {
-        
-        // Game State - Default
-        private GameState currentState = GameState.HeroSelection;
-        private Heroes selectedHero;
-
-        // Flags
-        bool isHeroSelected = false;
-
-        public void Run()
+        GameState Update(GameContext context);
+    }
+    public class MainMenuState : IMenuState
+    {
+        public GameState Update(GameContext context)
         {
-            while (currentState != GameState.Exit)
+            Console.Clear();
+            Console.WriteLine("--- MAIN MENU ---");
+            Console.WriteLine($"""
+            (1) BlackSmith
+            (2) Training
+            (3) Adventure
+            (4) Region Boss
+            """);
+            
+            string input = Console.ReadLine() ?? "";
+            return input switch
             {
-                Console.Clear();
-                switch (currentState)
-                {
-                    case GameState.HeroSelection:
-                        HandleHeroSelection();
-                        break;
-                    case GameState.MainMenu:
-                        HandleMainMenu();
-                        break;
-                    case GameState.Blacksmith:
-                        HandleBlacksmith();
-                        break;
-                    default:
-                        currentState = GameState.Exit;
-                        break;
-                }
-            }
+                "1" => GameState.Blacksmith,
+                "2" => GameState.Training,
+                "3" => GameState.Adventure,
+                "4" => GameState.RegionBoss,
+                _ => GameState.MainMenu
+            };
         }
-
-        public void HandleHeroSelection()
+    }
+    public class HeroSelectionState : IMenuState
+    {
+        public GameState Update(GameContext context)
         {
-            while (selectedHero == null)
+            while (context.SelectedHero == null)
             {
                 Console.Clear();
                 Console.WriteLine("Please choose a hero to overview Eg. 1");
@@ -62,7 +61,7 @@ namespace TextBasedRPG.Heroes
                  ---------------------
                  """);
 
-                string ?input = Console.ReadLine();
+                string? input = Console.ReadLine();
 
                 Heroes? candidate = input switch
                 {
@@ -73,53 +72,100 @@ namespace TextBasedRPG.Heroes
 
                 if (candidate != null && ConfirmSelection(candidate))
                 {
-                    selectedHero = candidate;
-                    currentState = GameState.MainMenu; // State Transition
+                    context.SelectedHero = candidate;
+                    return GameState.MainMenu;
                 }
             }
-            return;
+            return GameState.HeroSelection;
         }
+    
         private bool ConfirmSelection(Heroes candidate)
         {
             candidate.GetStatsSummary();
             Console.WriteLine($"Confirm {candidate.ClassName}? (Y/N)");
             return Console.ReadLine()?.ToUpper() == "Y";
         }
-
-        public void HandleMainMenu()
+    }
+    public class BlacksmithState : IMenuState
+    {
+        public GameState Update(GameContext context)
         {
             Console.Clear();
-            Console.WriteLine("Where do you want to go?");
-            Console.WriteLine($"""
-             ---------------------
-                (1). BlackSmith 
-                (2). Training 
-                (3). Adventure
-                (4). Region Boss
-             ---------------------
-             """);
-            string ?input = Console.ReadLine();
-            currentState = input switch
-            {
-                "1" => GameState.Blacksmith,
-                "2" => GameState.Training,
-                "3" => GameState.Adventure,
-                "4" => GameState.RegionBoss,
-                _ => currentState
-            };
-            if (currentState == GameState.MainMenu)
-            {
-                Console.WriteLine("Invalid Selection, please try again.\nPress any key to continue...");
-                Console.ReadKey();
-            }
-            return;
-        }
-        private void HandleBlacksmith()
-        {
-            Console.WriteLine("Welcome to the Forge! Press any key to go back.");
+            Console.WriteLine("You are at the Blacksmith... Press any key to continue.");
             Console.ReadKey();
-            currentState = GameState.MainMenu; // Transition back
+            return GameState.MainMenu;
+        }
+    }
+    public class TrainingState : IMenuState
+    {
+        public GameState Update(GameContext context)
+        {
+            Console.Clear();
+            Console.WriteLine("You are at the Training... Press any key to continue.");
+            Console.ReadKey();
+            return GameState.MainMenu;
+        }
+    }
+    public class AdventureState : IMenuState
+    {
+        public GameState Update(GameContext context)
+        {
+            Console.Clear();
+            Console.WriteLine("You are at the Adventure... Press any key to continue.");
+            Console.ReadKey();
+            return GameState.MainMenu;
+        }
+    }
+    public class RegionBossState : IMenuState
+    {
+        public GameState Update(GameContext context)
+        {
+            Console.Clear();
+            Console.WriteLine("You are at the Region Boss... Press any key to continue.");
+            Console.ReadKey();
+            return GameState.MainMenu;
         }
     }
 
+    #endregion
+
+    public class GameManager
+    {
+        private GameState _currentState = GameState.HeroSelection;
+        private readonly GameContext _context = new GameContext();
+        private readonly Dictionary<GameState, IMenuState> _states;
+        public GameManager()
+        {
+            // Menus
+            _states = new Dictionary<GameState, IMenuState> {
+                { GameState.HeroSelection, new HeroSelectionState() },
+                { GameState.MainMenu, new MainMenuState() },
+                { GameState.Blacksmith, new BlacksmithState() },
+                { GameState.Training, new TrainingState() },
+                { GameState.Adventure, new AdventureState() },
+                { GameState.RegionBoss, new RegionBossState() },
+            };
+        }
+
+        public void Run()
+        {
+            while (_currentState != GameState.Exit)
+            {
+                if (_states.ContainsKey(_currentState))
+                {
+                    _currentState = _states[_currentState].Update(_context);
+                }
+                else
+                {
+                    _currentState = GameState.Exit;
+                }
+            }
+        }
+    }
+
+    public class GameContext
+    {
+        public Heroes SelectedHero { get; set; }
+        public Weapon Weapon { get; set; }
+    }
 }
