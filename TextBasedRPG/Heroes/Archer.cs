@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TextBasedRPG.Heroes
+﻿namespace TextBasedRPG.Heroes
 {
     internal class Archer : Heroes
     {
