@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TextBasedRPG.Interfaces
+﻿namespace TextBasedRPG.Interfaces
 {
     public interface IDamageable
     {
