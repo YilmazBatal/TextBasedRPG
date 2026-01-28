@@ -1,17 +1,5 @@
 ﻿namespace TextBasedRPG.Heroes
 {
-    public enum GameState
-    {
-        HeroSelection,
-        MainMenu,
-        Blacksmith,
-        Training,
-        Adventure,
-        RegionBoss,
-        Exit    
-    }
-    
-    
     public interface IMenuState
     {
         GameState Update(GameContext context);
@@ -44,6 +32,11 @@
             (S) Save Game       - Save Progress
             (Q) Quit
             """);
+            for (int i = 0; i < context.Player.Inventory?.Count; i++)
+            {
+                Console.WriteLine(context.Player.Inventory[i]);
+            }
+            //Console.WriteLine(context.Player.Inventory);
             string? input = Console.ReadLine()?.ToUpper();
 
             if (input == "S")
@@ -196,7 +189,7 @@
                 if (_states.ContainsKey(_currentState))
                 {
                     _currentState = _states[_currentState].Update(_context);
-                }
+                }   
                 else
                 {
                     _currentState = GameState.Exit;

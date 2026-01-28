@@ -11,6 +11,8 @@ namespace TextBasedRPG
     internal class DataManager : ISaveService
     {
         private readonly string _savePath = "data.json";
+
+        #region Save
         public void SaveGame(GameContext context)
         {
             if (context.Player == null) return; // if there is no hero, it means no game progress
@@ -24,15 +26,52 @@ namespace TextBasedRPG
                     Level = context.Player.Level,
                     Experience = context.Player.Experience,
                     Gold = context.Player.Gold,
+
                     Stats = new StatData
                     {
+                        UnusedStatPoints = context.Player.UnusedStatPoints,
                         InvestedSTR = context.Player.InvestedSTRPoints,
                         InvestedVIT = context.Player.InvestedVITPoints,
                         InvestedDEX = context.Player.InvestedDEXPoints,
                     }
                 }
             };
+            // convert items to itemdata and append to player inventory json
+            List<ItemData> convertedInventory = new List<ItemData>();
+            if (context.Player.Inventory != null)
+            {
+                foreach (var item in context.Player.Inventory)
+                {
+                    var itemData = new ItemData
+                    {
+                        Name = item.Name,
+                        Description = item.Description,
+                        Price = item.Price,
+                        Rarity = item.Rarity.ToString(),
+                        ItemType = item.Type.ToString()
+                    };
 
+                    if (item is Weapon weapon)
+                    {
+                        itemData.WeaponATK = weapon.WeaponATK;
+                        itemData.WeaponType = weapon.WeaponType.ToString();
+                        itemData.RequiredLevel = weapon.RequiredLevel;
+                    }
+                    else if (item is Armor armor)
+                    {
+                        itemData.ArmorDef = armor.ArmorDef;
+                        itemData.RequiredLevel = armor.RequiredLevel;
+                    }
+                    else if (item is Material material)
+                    {
+                        itemData.Quantity = material.Quantity;
+                    }
+                    convertedInventory.Add(itemData);
+                }            
+            }
+               
+            saveData.Player.Inventory = convertedInventory;
+            
             // Convert to JSON with WriteIndented option for better readability
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(saveData, options);
@@ -43,6 +82,9 @@ namespace TextBasedRPG
             Console.WriteLine("\n[SYSTEM] Game progress saved successfully.");
             Thread.Sleep(1000);
         }
+        #endregion
+        
+        #region Load
         public GameContext LoadGame()
         {
             if (!File.Exists(_savePath))
@@ -50,7 +92,7 @@ namespace TextBasedRPG
                 Console.WriteLine("[SYSTEM] No save file found.");
                 Thread.Sleep(1000);
                 Console.WriteLine("[SYSTEM] Creating a new save file...");
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
 
                 return new GameContext();
             }
@@ -76,6 +118,50 @@ namespace TextBasedRPG
                 context.Player.Gold = loadedData.Player?.Gold ?? 100;
                 context.Player.Level = loadedData.Player?.Level ?? 1;
                 context.Player.Experience = loadedData.Player?.Experience ?? 0;
+
+                if (loadedData.Player?.Inventory != null)
+                {
+                    context.Player.Inventory?.Clear();
+                    foreach (var item in loadedData.Player.Inventory)
+                    {
+                        if (item.ItemType == "Weapon")
+                        {
+                            context.Player.Inventory?.Add(new Weapon {
+                                Name = item.Name ?? "Unknown Weapon",
+                                Description = item.Description ?? "No Description",
+                                Price = item.Price,
+                                WeaponATK = item.WeaponATK,
+                                RequiredLevel = item.RequiredLevel,
+                                Rarity = Enum.TryParse<Rarity>(item.Rarity, true, out var r) ? r : Rarity.Common,
+                                WeaponType = Enum.TryParse<WeaponType>(item.WeaponType, true, out var wt) ? wt : WeaponType.Sword
+                            });
+                        }
+                        else if (item.ItemType == "Armor")
+                        {
+                            context.Player.Inventory?.Add(new Armor
+                            {
+                                Name = item.Name ?? "Unknown Armor",
+                                Description = item.Description ?? "No Description",
+                                Price = item.Price,
+                                ArmorDef = item.ArmorDef,
+                                RequiredLevel = item.RequiredLevel,
+                                Rarity = Enum.TryParse<Rarity>(item.Rarity, true, out var r) ? r : Rarity.Common,
+                            });
+                        } else if (item.ItemType == "Material")
+                        {
+                            context.Player.Inventory?.Add(new Material
+                            {
+                                Name = item.Name ?? "Unknown Armor",
+                                Description = item.Description ?? "No Description",
+                                Price = item.Price,
+                                Quantity = item.Quantity,
+                                Rarity = Enum.TryParse<Rarity>(item.Rarity, true, out var r) ? r : Rarity.Common,
+                            });
+                        }
+                    }
+
+                }
+
                 context.Player.UnusedStatPoints = loadedData.Player?.Stats?.UnusedStatPoints ?? 0;
                 context.Player.InvestedSTRPoints = loadedData.Player?.Stats?.InvestedSTR ?? 0;
                 context.Player.InvestedVITPoints = loadedData.Player?.Stats?.InvestedVIT ?? 0;
@@ -86,7 +172,9 @@ namespace TextBasedRPG
             Thread.Sleep(1000);
             return context;
         }
+        #endregion
     }
+    #region Data Models for Serialization
     public class Data
     {
         public Player? Player { get; set; }
@@ -97,7 +185,27 @@ namespace TextBasedRPG
         public int? Level { get; set; }
         public int? Experience { get; set; }
         public int? Gold { get; set; }
+        public List<ItemData>? Inventory { get; set; }
         public StatData? Stats { get; set; }
+    }
+    /// <summary>
+    /// JSON Structure for actual Item Class.
+    /// We get this data from file and convert to Item class in other words context.
+    /// And when saving data we convert Item class to this structure and save it to file.
+    /// </summary>
+    public class ItemData
+    {
+        public string? ItemType { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public int Price { get; set; }
+        public string? Rarity { get; set; }
+        public int WeaponATK { get; set; }
+        public int ArmorDef { get; set; }
+        public string? WeaponType { get; set; }
+        public int RequiredLevel { get; set; }
+        public int Quantity { get; set; }
+        public int MaxStack { get; set; }
     }
     public class StatData
     {
@@ -111,5 +219,5 @@ namespace TextBasedRPG
         public string? Armor { get; set; }
         public string? Weapon { get; set; }
     }
-
+    #endregion
 }
