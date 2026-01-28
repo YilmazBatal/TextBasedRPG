@@ -4,6 +4,8 @@
     {
         GameState Update(GameContext context);
     }
+
+    #region Menus
     public class MainMenuState : IMenuState
     {
         private readonly ISaveService _saveService;
@@ -22,21 +24,17 @@
                 return GameState.HeroSelection;
             }
 
-            Console.WriteLine($"--- WELCOME, {context.Player.ClassName?.ToUpper()} ---");
+            HeroPreview(context);
             Console.WriteLine("--- MAIN MENU ---");
             Console.WriteLine($"""
-            (1) BlackSmith      - Upgrade Equipments
-            (2) Training        - Improve Yourself
-            (3) Adventure       - Fight Monsters
-            (4) Region Boss     - Challange Boss
+            (1) Backpack        - Browse in your inventory
+            (2) BlackSmith      - Upgrade Equipments
+            (3) Training        - Improve Yourself
+            (4) Adventure       - Fight Monsters
+            (5) Region Boss     - Challange Boss
             (S) Save Game       - Save Progress
             (Q) Quit
             """);
-            for (int i = 0; i < context.Player.Inventory?.Count; i++)
-            {
-                Console.WriteLine(context.Player.Inventory[i]);
-            }
-            //Console.WriteLine(context.Player.Inventory);
             string? input = Console.ReadLine()?.ToUpper();
 
             if (input == "S")
@@ -49,13 +47,28 @@
 
             return input switch
             {
-                "1" => GameState.Blacksmith,
-                "2" => GameState.Training,
-                "3" => GameState.Adventure,
-                "4" => GameState.RegionBoss,
+                "1" => GameState.Inventory,
+                "2" => GameState.Blacksmith,
+                "3" => GameState.Training,
+                "4" => GameState.Adventure,
+                "5" => GameState.RegionBoss,
                 "Q" => GameState.Exit,
                 _ => GameState.MainMenu
             };
+        }
+
+        void HeroPreview(GameContext context)
+        {
+            Console.WriteLine("==============================================");
+            Console.WriteLine("   [ AVATAR ]          PLAYER STATUS      ");
+            Console.WriteLine("      O                Class: " + context.Player?.ClassName);
+            Console.WriteLine("     /|\\               Level: " + context.Player?.Level);
+            Console.WriteLine("     / \\               Gold : " + context.Player?.Gold);
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("HP [███████___] 18/22" + " - " + "EXP [█████_____] 25/52");
+            //string hpBar = new string('█', (int)(context.Player?.CurrentHP / 10));
+            //Console.WriteLine($" HP: [{hpBar,-10}] {context.Player.CurrentHP}/{context.Player?.MaxHP}");
+            Console.WriteLine("==============================================");
         }
     }
     public class HeroSelectionState : IMenuState
@@ -108,8 +121,17 @@
         }
     }
 
-    #region Location Menus
     // i'll update the context later
+    public class InventoryState : IMenuState
+    {
+        public GameState Update(GameContext context)
+        {
+            Console.Clear();
+            Console.WriteLine("Inventory pagination in the future.");
+            Console.ReadKey();
+            return GameState.MainMenu;
+        }
+    }
     public class BlacksmithState : IMenuState
     {
         public GameState Update(GameContext context)
@@ -150,7 +172,6 @@
             return GameState.MainMenu;
         }
     }
-
     #endregion
 
     public class GameManager
@@ -201,6 +222,5 @@
     public class GameContext
     {
         public Heroes? Player { get; set; }
-
     }
 }
