@@ -4,6 +4,7 @@ namespace TextBasedRPG.Heroes
 {
     public abstract class Heroes : IDamageable
     {
+        public List<Item>? Inventory {  get; set; } = new List<Item>();
         // Basic Info
         public string? ClassName { get; protected set; }
         public string? Description { get; protected set; }
