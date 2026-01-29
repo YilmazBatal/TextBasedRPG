@@ -1,4 +1,6 @@
-﻿namespace TextBasedRPG.Heroes
+﻿using System.Diagnostics;
+
+namespace TextBasedRPG.Heroes
 {
     public interface IMenuState
     {
@@ -102,7 +104,7 @@
                     "2" => new Archer(),
                     _ => null
                 };
-
+                
                 if (candidate != null && ConfirmSelection(candidate))
                 {
                     context.Player = candidate;
@@ -127,10 +129,10 @@
         public GameState Update(GameContext context)
         {
             Console.Clear();
-            Console.WriteLine("Inventory pagination in the future.");
-            Console.ReadKey();
+            UIHelper.BackpackPagination(context);
             return GameState.MainMenu;
         }
+        
     }
     public class BlacksmithState : IMenuState
     {
@@ -138,6 +140,7 @@
         {
             Console.Clear();
             Console.WriteLine("You are at the Blacksmith... Press any key to continue.");
+            
             Console.ReadKey();
             return GameState.MainMenu;
         }
@@ -173,7 +176,131 @@
         }
     }
     #endregion
+    public static class UIHelper
+    {
+        public static void BackpackPagination(GameContext context)
+        {
+            var inventory = context.Player?.Inventory;
+            if (inventory == null) return;
 
+            int itemsPerPage = 9;
+            int pageCount = (int)Math.Ceiling((double)inventory.Count / itemsPerPage);
+            int currentPage = 0; 
+            bool inMenu = true;
+
+            while (inMenu)
+            {
+                Console.Clear();
+                Console.WriteLine($"================== BACKPACK PAGE {currentPage + 1} / {pageCount} ==================");
+            
+
+                for (int j = 0; j < itemsPerPage; j++)
+                {
+                    int currentIndex = j + (currentPage * itemsPerPage);
+                
+                    if (currentIndex >= inventory.Count)
+                        break;
+
+                    var item = inventory[currentIndex];
+                    Console.WriteLine($"({j + 1}) {item.Name,-20} {item.Type,-10} {item.Rarity,10}");
+                }
+                Console.WriteLine("============================================================");
+                Console.WriteLine("(P)revious Page | (N)ext Page | (B)ack to Menu");
+                Console.Write("Selection: ");
+
+                string input = Console.ReadLine()?.ToUpper() ?? "";
+
+                if (input == "N")
+                {
+                    if (currentPage < pageCount - 1) currentPage++;
+                }
+                else if (input == "P")
+                {
+                    if (currentPage > 0) currentPage--;
+                }
+                else if (input == "B") inMenu = false;
+                else
+                {
+                    if (int.TryParse(input, out int selection) && selection >= 1 && selection <= 9)
+                    {
+                        int realIndex = (currentPage * itemsPerPage) + (selection - 1);
+
+                        if (realIndex < inventory.Count)
+                        {
+                            var selectedItem = inventory[realIndex];
+
+                            ShowItemDetails(inventory, selectedItem, false);
+                        }
+                    }
+                }
+            }
+        }
+        private static void ShowItemDetails(List<Item> inventory, Item item, bool isAtShop)
+        {
+            bool inMenu = true;
+            while (inMenu)
+            {
+                Console.Clear();
+                Console.WriteLine($"========================================");
+                Console.WriteLine($"{"Name:",-15} {item.Name}");
+                Console.WriteLine($"{"Description:",-15} {item.Description}");
+                bool isEquippable = false;
+                if (item is Weapon || item is Armor)
+                {
+                    isEquippable = true;
+                    if (item is Weapon weapon)
+                    {
+                        Console.WriteLine($"{"Type:",-15} {weapon.WeaponType}");
+                        Console.WriteLine($"{"Attack:",-15} {weapon.WeaponATK}");
+                        Console.WriteLine($"{"Req. Level:",-15} {weapon.RequiredLevel}");
+                    }
+                    else if (item is Armor armor)
+                    {
+                        Console.WriteLine($"{"Defense:",-15} {armor.ArmorDef}");
+                        Console.WriteLine($"{"Req. Level:",-15} {armor.RequiredLevel}");
+                    }
+                }
+                Console.WriteLine($"========================================");
+                Console.WriteLine($"{(isEquippable ? "(E)quip | " : "")}(D)iscard {(isAtShop ? "| (S)ell" : "")} | (B)ack");
+                Console.Write("Selection: ");
+
+                string input = Console.ReadLine()?.ToUpper() ?? "";
+
+                if (input == "D")
+                {
+                    Console.WriteLine("Are you sure?");
+                    Console.Write("Selection: ");
+                    string confirmation = Console.ReadLine()?.ToUpper() ?? "N";
+                    if (confirmation == "Y") inventory.Remove(item);
+                    return;
+                }
+                else if (input == "E" && isEquippable)
+                {
+                    // Equip then discard from inventory
+                    // if already has smth equipped then replace it
+                    // if user level is not enough to equip give error.
+                    Console.WriteLine("Equipped");
+                }
+                else if (input == "S" && isAtShop)
+                {
+                    // Add Gold to the accound then discard it
+                    // if it's a material and there is more than 1, ask for quantity.
+                }
+                else if (input == "B")
+                {
+                    inMenu = false;
+                }
+            }
+        }
+    }
+    /// <summary>
+    /// Manages the overall game flow, including state transitions, context management, and integration with the save
+    /// system.
+    /// </summary>
+    /// <remarks>The GameManager coordinates the main game loop and handles switching between different game
+    /// states, such as menus and gameplay areas. It loads and saves game progress using the provided save service. This
+    /// class is typically instantiated once at application startup and remains active for the duration of the game
+    /// session.</remarks>
     public class GameManager
     {
         private GameState _currentState = GameState.HeroSelection; // Initial Menu
@@ -196,6 +323,7 @@
             _states = new Dictionary<GameState, IMenuState> {
                 { GameState.HeroSelection, new HeroSelectionState(_saveService) },
                 { GameState.MainMenu, new MainMenuState(_saveService) },
+                { GameState.Inventory, new InventoryState() },
                 { GameState.Blacksmith, new BlacksmithState() },
                 { GameState.Training, new TrainingState() },
                 { GameState.Adventure, new AdventureState() },
@@ -219,6 +347,9 @@
         }
     }
 
+    /// <summary>
+    /// Context to hold game data during runtime
+    /// </summary>
     public class GameContext
     {
         public Heroes? Player { get; set; }
