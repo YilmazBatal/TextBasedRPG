@@ -127,6 +127,7 @@ namespace TextBasedRPG
                         if (item.ItemType == "Weapon")
                         {
                             context.Player.Inventory?.Add(new Weapon {
+                                Type = Enum.TryParse<ItemType>(item.ItemType, true, out var t) ? t : ItemType.Weapon,
                                 Name = item.Name ?? "Unknown Weapon",
                                 Description = item.Description ?? "No Description",
                                 Price = item.Price,
@@ -140,6 +141,7 @@ namespace TextBasedRPG
                         {
                             context.Player.Inventory?.Add(new Armor
                             {
+                                Type = Enum.TryParse<ItemType>(item.ItemType, true, out var t) ? t : ItemType.Armor,
                                 Name = item.Name ?? "Unknown Armor",
                                 Description = item.Description ?? "No Description",
                                 Price = item.Price,
@@ -151,6 +153,7 @@ namespace TextBasedRPG
                         {
                             context.Player.Inventory?.Add(new Material
                             {
+                                Type = Enum.TryParse<ItemType>(item.ItemType, true, out var t) ? t : ItemType.Material,
                                 Name = item.Name ?? "Unknown Armor",
                                 Description = item.Description ?? "No Description",
                                 Price = item.Price,
