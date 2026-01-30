@@ -29,13 +29,13 @@ namespace TextBasedRPG.Heroes
             HeroPreview(context);
             Console.WriteLine("--- MAIN MENU ---");
             Console.WriteLine($"""
-            (1) Backpack        - Browse in your inventory
-            (2) BlackSmith      - Upgrade Equipments
-            (3) Training        - Improve Yourself
-            (4) Adventure       - Fight Monsters
-            (5) Region Boss     - Challange Boss
-            (S) Save Game       - Save Progress
-            (Q) Quit
+            [1] Backpack        - Browse in your inventory
+            [2] BlackSmith      - Upgrade Equipments
+            [3] Training        - Improve Yourself
+            [4] Adventure       - Fight Monsters
+            [5] Region Boss     - Challange Boss
+            [S] Save Game       - Save Progress
+            [Q] Quit
             """);
             string? input = Console.ReadLine()?.ToUpper();
 
@@ -90,8 +90,8 @@ namespace TextBasedRPG.Heroes
                 Console.WriteLine("Please choose a hero to overview Eg. 1");
                 Console.WriteLine($"""
                  ---------------------
-                    (1). Warrior 
-                    (2). Archer
+                    [1]. Warrior 
+                    [2]. Archer
                     More Heroes soon...
                  ---------------------
                  """);
@@ -118,7 +118,7 @@ namespace TextBasedRPG.Heroes
         private bool ConfirmSelection(Heroes candidate)
         {
             candidate.GetStatsSummary();
-            Console.WriteLine($"Confirm {candidate.ClassName}? (Y/N)");
+            Console.WriteLine($"Confirm {candidate.ClassName}? [Y/N]");
             return Console.ReadLine()?.ToUpper() == "Y";
         }
     }
@@ -192,7 +192,9 @@ namespace TextBasedRPG.Heroes
             {
                 Console.Clear();
                 Console.WriteLine($"================== BACKPACK PAGE {currentPage + 1} / {pageCount} ==================");
-            
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine($"    {"Item Name",-20} {"Category",-10} {"Rarity",10}");
+                Console.WriteLine("---------------------------------------------------------");
 
                 for (int j = 0; j < itemsPerPage; j++)
                 {
@@ -202,10 +204,11 @@ namespace TextBasedRPG.Heroes
                         break;
 
                     var item = inventory[currentIndex];
-                    Console.WriteLine($"({j + 1}) {item.Name,-20} {item.Type,-10} {item.Rarity,10}");
+                    Console.Write($"[{j + 1}] {item.Name,-20} {item.Type.ToString(),-10} "); SetRarityColor(item.Rarity.ToString()); Console.WriteLine($"{item.Rarity.ToString(),10}"); Console.ResetColor();
                 }
-                Console.WriteLine("============================================================");
-                Console.WriteLine("(P)revious Page | (N)ext Page | (B)ack to Menu");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("[P]revious | [N]ext | [B]ack");
+                Console.WriteLine("==========================================================");
                 Console.Write("Selection: ");
 
                 string input = Console.ReadLine()?.ToUpper() ?? "";
@@ -242,33 +245,37 @@ namespace TextBasedRPG.Heroes
             {
                 Console.Clear();
                 Console.WriteLine($"========================================");
-                Console.WriteLine($"{"Name:",-15} {item.Name}");
-                Console.WriteLine($"{"Description:",-15} {item.Description}");
+                Console.Write($"{"Name:",-15} "); SetRarityColor(item.Rarity.ToString());  Console.WriteLine($"{item.Name, 20}"); Console.ResetColor();
+                Console.WriteLine($"{"Description:",-15} {item.Description,20}");
                 bool isEquippable = false;
                 if (item is Weapon || item is Armor)
                 {
                     isEquippable = true;
                     if (item is Weapon weapon)
                     {
-                        Console.WriteLine($"{"Type:",-15} {weapon.WeaponType}");
-                        Console.WriteLine($"{"Attack:",-15} {weapon.WeaponATK}");
-                        Console.WriteLine($"{"Req. Level:",-15} {weapon.RequiredLevel}");
+                        Console.WriteLine($"{"Type:",-15} {weapon.WeaponType,20}");
+                        Console.WriteLine($"{"Attack:",-15} {weapon.WeaponATK,20}");
+                        Console.WriteLine($"{"Req. Level:",-15} {weapon.RequiredLevel,20}");
                     }
                     else if (item is Armor armor)
                     {
-                        Console.WriteLine($"{"Defense:",-15} {armor.ArmorDef}");
-                        Console.WriteLine($"{"Req. Level:",-15} {armor.RequiredLevel}");
+                        Console.WriteLine($"{"Defense:",-15} {armor.ArmorDef,20}");
+                        Console.WriteLine($"{"Req. Level:",-15} {armor.RequiredLevel,20}");
                     }
+                }   else if (item is Material material) {
+                    Console.WriteLine($"{"Quantity:",-15} {material.Quantity,20}");
                 }
+
+                Console.WriteLine($"----------------------------------------");
+                Console.WriteLine($"{(isEquippable ? "[E]quip | " : "")}[D]iscard {(isAtShop ? "| [S]ell" : "")} | [B]ack");
                 Console.WriteLine($"========================================");
-                Console.WriteLine($"{(isEquippable ? "(E)quip | " : "")}(D)iscard {(isAtShop ? "| (S)ell" : "")} | (B)ack");
                 Console.Write("Selection: ");
 
                 string input = Console.ReadLine()?.ToUpper() ?? "";
 
                 if (input == "D")
                 {
-                    Console.WriteLine("Are you sure?");
+                    Console.WriteLine("Are you sure? [Y/N]");
                     Console.Write("Selection: ");
                     string confirmation = Console.ReadLine()?.ToUpper() ?? "N";
                     if (confirmation == "Y") inventory.Remove(item);
@@ -290,6 +297,18 @@ namespace TextBasedRPG.Heroes
                 {
                     inMenu = false;
                 }
+            }
+        }
+        private static void SetRarityColor(string rarity)
+        {
+            switch (rarity.ToLower())
+            {
+                case "common": Console.ForegroundColor = ConsoleColor.Gray; break;
+                case "uncommon": Console.ForegroundColor = ConsoleColor.Green; break;
+                case "rare": Console.ForegroundColor = ConsoleColor.Blue; break;
+                case "epic": Console.ForegroundColor = ConsoleColor.Magenta; break;
+                case "legendary": Console.ForegroundColor = ConsoleColor.DarkYellow; break;
+                default: Console.ResetColor(); break;
             }
         }
     }
