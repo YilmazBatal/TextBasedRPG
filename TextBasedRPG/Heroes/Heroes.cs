@@ -9,8 +9,8 @@ namespace TextBasedRPG.Heroes
         public string? ClassName { get; protected set; }
         public string? Description { get; protected set; }
         // Equipments 
-        public Weapon? Weapon { get; protected set; }
-        public Armor? Armor { get; protected set; }
+        public Weapon? EquippedWeapon { get; set; }
+        public Armor? EquippedArmor { get; set; }
         // Base Stats
         public int BaseHP { get; protected set; }
         public int BaseATK { get; protected set; }

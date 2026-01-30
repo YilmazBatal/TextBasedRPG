@@ -26,7 +26,27 @@ namespace TextBasedRPG
                     Level = context.Player.Level,
                     Experience = context.Player.Experience,
                     Gold = context.Player.Gold,
-
+                    EquippedWeapon = context.Player.EquippedWeapon != null ? new ItemData
+                    {
+                        Name = context.Player.EquippedWeapon.Name,
+                        Description = context.Player.EquippedWeapon.Description,
+                        Price = context.Player.EquippedWeapon.Price,
+                        Rarity = context.Player.EquippedWeapon.Rarity.ToString(),
+                        ItemType = context.Player.EquippedWeapon.Type.ToString(),
+                        WeaponATK = context.Player.EquippedWeapon.WeaponATK,
+                        WeaponType = context.Player.EquippedWeapon.WeaponType.ToString(),
+                        RequiredLevel = context.Player.EquippedWeapon.RequiredLevel
+                    } : null,
+                    EquippedArmor = context.Player.EquippedArmor != null ? new ItemData
+                    {
+                        Name = context.Player.EquippedArmor.Name,
+                        Description = context.Player.EquippedArmor.Description,
+                        Price = context.Player.EquippedArmor.Price,
+                        Rarity = context.Player.EquippedArmor.Rarity.ToString(),
+                        ItemType = context.Player.EquippedArmor.Type.ToString(),
+                        ArmorDef = context.Player.EquippedArmor.ArmorDef,
+                        RequiredLevel = context.Player.EquippedArmor.RequiredLevel
+                    } : null,
                     Stats = new StatData
                     {
                         UnusedStatPoints = context.Player.UnusedStatPoints,
@@ -119,6 +139,29 @@ namespace TextBasedRPG
                 context.Player.Level = loadedData.Player?.Level ?? 1;
                 context.Player.Experience = loadedData.Player?.Experience ?? 0;
 
+                // load equipped items
+                context.Player.EquippedWeapon = loadedData.Player?.EquippedWeapon != null ? new Weapon
+                {
+                    Type = Enum.TryParse<ItemType>(loadedData.Player.EquippedWeapon.ItemType, true, out var q) ? q : ItemType.Weapon,
+                    Name = loadedData.Player.EquippedWeapon.Name ?? "Unknown Weapon",
+                    Description = loadedData.Player.EquippedWeapon.Description ?? "No Description",
+                    Price = loadedData.Player.EquippedWeapon.Price,
+                    WeaponATK = loadedData.Player.EquippedWeapon.WeaponATK,
+                    RequiredLevel = loadedData.Player.EquippedWeapon.RequiredLevel,
+                    Rarity = Enum.TryParse<Rarity>(loadedData.Player.EquippedWeapon.Rarity, true, out var w) ? w : Rarity.Common,
+                    WeaponType = Enum.TryParse<WeaponType>(loadedData.Player.EquippedWeapon.WeaponType, true, out var wept) ? wept : WeaponType.Sword
+                } : null;
+                context.Player.EquippedArmor = loadedData.Player?.EquippedArmor != null ? new Armor
+                {
+                    Type = Enum.TryParse<ItemType>(loadedData.Player.EquippedArmor.ItemType, true, out var e) ? e : ItemType.Armor,
+                    Name = loadedData.Player.EquippedArmor.Name ?? "Unknown Armor",
+                    Description = loadedData.Player.EquippedArmor.Description ?? "No Description",
+                    Price = loadedData.Player.EquippedArmor.Price,
+                    ArmorDef = loadedData.Player.EquippedArmor.ArmorDef,
+                    RequiredLevel = loadedData.Player.EquippedArmor.RequiredLevel,
+                    Rarity = Enum.TryParse<Rarity>(loadedData.Player.EquippedArmor.Rarity, true, out var f) ? f : Rarity.Common,
+                } : null;
+
                 if (loadedData.Player?.Inventory != null)
                 {
                     context.Player.Inventory?.Clear();
@@ -188,6 +231,8 @@ namespace TextBasedRPG
         public int? Level { get; set; }
         public int? Experience { get; set; }
         public int? Gold { get; set; }
+        public ItemData? EquippedWeapon { get; set; }
+        public ItemData? EquippedArmor { get; set; }
         public List<ItemData>? Inventory { get; set; }
         public StatData? Stats { get; set; }
     }
@@ -216,11 +261,6 @@ namespace TextBasedRPG
         public int? InvestedSTR { get; set; }
         public int? InvestedVIT { get; set; }
         public int? InvestedDEX { get; set; }
-    }
-    public class Equipment
-    {
-        public string? Armor { get; set; }
-        public string? Weapon { get; set; }
     }
     #endregion
 }
