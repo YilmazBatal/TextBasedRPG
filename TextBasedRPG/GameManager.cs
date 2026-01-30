@@ -207,7 +207,10 @@ namespace TextBasedRPG.Heroes
                     Console.Write($"[{j + 1}] {item.Name,-20} {item.Type.ToString(),-10} "); SetRarityColor(item.Rarity.ToString()); Console.WriteLine($"{item.Rarity.ToString(),10}"); Console.ResetColor();
                 }
                 Console.WriteLine("---------------------------------------------------------");
-                Console.WriteLine("[P]revious | [N]ext | [B]ack");
+                Console.WriteLine($"Equipped Weapon : {(context.Player?.EquippedWeapon != null ? context.Player.EquippedWeapon.Name : "No Equipped Weapon")}");
+                Console.WriteLine($"Equipped Armor : {(context.Player?.EquippedArmor != null ? context.Player.EquippedArmor.Name : "No Equipped Weapon")}");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine($"[P]revious | [N]ext | [B]ack | [U]nequip");
                 Console.WriteLine("==========================================================");
                 Console.Write("Selection: ");
 
@@ -221,6 +224,32 @@ namespace TextBasedRPG.Heroes
                 {
                     if (currentPage > 0) currentPage--;
                 }
+                else if (input == "U")
+                {
+                    Console.WriteLine($"""
+                        [1] Unequip : {(context.Player?.EquippedWeapon != null ? context.Player.EquippedWeapon.Name : "No Equipped Weapon")}
+                        [2] Unequip :  {(context.Player?.EquippedArmor != null ? context.Player.EquippedArmor.Name : "No Equipped Armor")}
+                        """);
+                    Console.Write("Selection: ");
+                    string selection = Console.ReadLine() ?? "";
+                    if (selection == "1" && context.Player?.EquippedWeapon != null) 
+                    {
+                        context.Player?.Inventory?.Add(context.Player.EquippedWeapon);
+                        Console.WriteLine("[System] Unequipped the " + context.Player?.EquippedWeapon);
+                        context.Player?.EquippedWeapon = null;
+                    }
+                    else if (selection == "2" && context.Player?.EquippedArmor != null)
+                    {
+                        context.Player?.Inventory?.Add(context.Player.EquippedArmor);
+                        Console.WriteLine("[System] Unequipped the " + context.Player?.EquippedArmor);
+                        context.Player?.EquippedArmor = null;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[System] Nothing to unequip!");
+                        Thread.Sleep(1000);
+                    }
+                }
                 else if (input == "B") inMenu = false;
                 else
                 {
@@ -232,13 +261,13 @@ namespace TextBasedRPG.Heroes
                         {
                             var selectedItem = inventory[realIndex];
 
-                            ShowItemDetails(inventory, selectedItem, false);
+                            ShowItemDetails(inventory, selectedItem, isAtShop: false, context);
                         }
                     }
                 }
             }
         }
-        private static void ShowItemDetails(List<Item> inventory, Item item, bool isAtShop)
+        private static void ShowItemDetails(List<Item> inventory, Item item, bool isAtShop, GameContext context)
         {
             bool inMenu = true;
             while (inMenu)
@@ -283,15 +312,70 @@ namespace TextBasedRPG.Heroes
                 }
                 else if (input == "E" && isEquippable)
                 {
-                    // Equip then discard from inventory
-                    // if already has smth equipped then replace it
-                    // if user level is not enough to equip give error.
-                    Console.WriteLine("Equipped");
+                    // TODO: If I add more items like rings or necklaces later, 
+                    // I should create an "Equipment" class under "Item". 
+                    // This way, I can move RequiredLevel there and clean these 'if' blocks.
+                    if (item is Weapon w && w.RequiredLevel > context.Player?.Level || item is Armor a && a.RequiredLevel > context.Player?.Level)
+                    {
+                        Console.WriteLine("[System] Player level is not enough!");
+                        Thread.Sleep(1000);
+                        continue;
+                    }
+
+                    if (item is Weapon weapon)
+                    {
+                        if (context.Player?.EquippedWeapon != null)
+                        {
+                            context.Player?.Inventory?.Add(context.Player.EquippedWeapon);
+                            context.Player?.EquippedWeapon = weapon;
+                            context.Player?.Inventory?.Remove(weapon);
+                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon.Name);
+                        }
+                        else if (context.Player?.EquippedWeapon == null)
+                        {
+                            context.Player?.EquippedWeapon = weapon;
+                            context.Player?.Inventory?.Remove(weapon);
+                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon?.Name);
+
+                        }
+                    }
+                    else if (item is Armor armor)
+                    {
+                        if (context.Player?.EquippedArmor != null)
+                        {
+                            context.Player?.Inventory?.Add(context.Player.EquippedArmor);
+                            context.Player?.EquippedArmor = armor;
+                            context.Player?.Inventory?.Remove(armor);
+                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor.Name);
+                        }
+                        else if (context.Player?.EquippedArmor == null)
+                        {
+                            context.Player?.EquippedArmor = armor;
+                            context.Player?.Inventory?.Remove(armor);
+                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor?.Name);
+                        }
+                    }
+                    Thread.Sleep(1000);
+                    return;
                 }
                 else if (input == "S" && isAtShop)
                 {
-                    // Add Gold to the accound then discard it
-                    // if it's a material and there is more than 1, ask for quantity.
+                    Console.WriteLine("Are you sure you want to sell the " + item.Name + " for " + ((double)item.Price * 35 / 100).ToString() + "? [Y]/[N]");
+                    Console.Write("Selection: ");
+                    string confirmation = Console.ReadLine()?.ToUpper() ?? "";
+
+                    if (confirmation == "Y")
+                    {
+                        inventory.Remove(item);
+                        context.Player?.Gold += item.Price;
+                        Console.WriteLine("You sold the " + item.Name + " for " + ((double)item.Price * 35 / 100).ToString() + "!");
+                        Thread.Sleep(1000);
+                        return;
+                    }
+                    else
+                    {
+                        return;   
+                    }
                 }
                 else if (input == "B")
                 {
