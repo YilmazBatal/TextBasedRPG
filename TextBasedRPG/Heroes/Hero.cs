@@ -31,7 +31,7 @@ namespace TextBasedRPG.Heroes
         // Advanced stats             
         public double TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (InvestedSTRPoints * 1.5);
         public double TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (InvestedVITPoints * 1.5);
-        public double TotalHP => BaseHP + (EquippedArmor?.ArmorDef ?? 0) + (InvestedVITPoints * 1.5);
+        public double TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (InvestedVITPoints * 1.5);
         public double CritRate => 5 + InvestedDEXPoints * 1.0 / 3.0; // %
         public double CritDamage => 150 + InvestedSTRPoints; // %
         public double EvasionRate => 5 + InvestedAGIPoints * 1.0 / 3.0;
