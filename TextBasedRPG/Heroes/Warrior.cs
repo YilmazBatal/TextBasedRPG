@@ -1,6 +1,6 @@
 ﻿namespace TextBasedRPG.Heroes
 {
-    internal class Warrior : Heroes
+    internal class Warrior : Hero
     {
         public Warrior()
         {

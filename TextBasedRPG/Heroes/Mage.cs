@@ -1,6 +1,6 @@
 ﻿namespace TextBasedRPG.Heroes
 {
-    internal class Mage : Heroes
+    internal class Mage : Hero
     {
         public Mage()
         {
