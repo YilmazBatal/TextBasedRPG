@@ -321,13 +321,13 @@ namespace TextBasedRPG.Heroes
                         Console.WriteLine($"{"Type:",-15} {weapon.WeaponType,20}");
                         Console.WriteLine($"{"Attack:",-15} {weapon.WeaponATK,20}");
                         Console.WriteLine($"{"Req. Level:",-15} {weapon.RequiredLevel,20}");
-                        isLevelEnough = true ? context.Player?.Level >= weapon.RequiredLevel : false;
+                        isLevelEnough = context.Player?.Level >= weapon.RequiredLevel;
                     }
                     else if (item is Armor armor)
                     {
                         Console.WriteLine($"{"Defense:",-15} {armor.ArmorDef,20}");
                         Console.WriteLine($"{"Req. Level:",-15} {armor.RequiredLevel,20}");
-                        isLevelEnough = true ? context.Player?.Level >= armor.RequiredLevel : false;
+                        isLevelEnough = context.Player?.Level >= armor.RequiredLevel;
                     }
                 }   else if (item is Material material) {
                     Console.WriteLine($"{"Quantity:",-15} {material.Quantity,20}");
