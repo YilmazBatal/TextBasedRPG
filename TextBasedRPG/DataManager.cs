@@ -24,7 +24,7 @@ namespace TextBasedRPG
                 {
                     Class = context.Player.ClassName,
                     Level = context.Player.Level,
-                    Experience = context.Player.Experience,
+                    Experience = context.Player.CurExp,
                     Gold = context.Player.Gold,
                     EquippedWeapon = context.Player.EquippedWeapon != null ? new ItemData
                     {
@@ -45,6 +45,7 @@ namespace TextBasedRPG
                         Rarity = context.Player.EquippedArmor.Rarity.ToString(),
                         ItemType = context.Player.EquippedArmor.Type.ToString(),
                         ArmorDef = context.Player.EquippedArmor.ArmorDef,
+                        ExtraHP = context.Player.EquippedArmor.ExtraHP,
                         RequiredLevel = context.Player.EquippedArmor.RequiredLevel
                     } : null,
                     Stats = new StatData
@@ -53,6 +54,7 @@ namespace TextBasedRPG
                         InvestedSTR = context.Player.InvestedSTRPoints,
                         InvestedVIT = context.Player.InvestedVITPoints,
                         InvestedDEX = context.Player.InvestedDEXPoints,
+                        InvestedAGI = context.Player.InvestedAGIPoints,
                     }
                 }
             };
@@ -80,6 +82,7 @@ namespace TextBasedRPG
                     else if (item is Armor armor)
                     {
                         itemData.ArmorDef = armor.ArmorDef;
+                        itemData.ExtraHP = armor.ExtraHP;
                         itemData.RequiredLevel = armor.RequiredLevel;
                     }
                     else if (item is Material material)
@@ -137,7 +140,7 @@ namespace TextBasedRPG
 
                 context.Player.Gold = loadedData.Player?.Gold ?? 100;
                 context.Player.Level = loadedData.Player?.Level ?? 1;
-                context.Player.Experience = loadedData.Player?.Experience ?? 0;
+                context.Player.CurExp = loadedData.Player?.Experience ?? 0;
 
                 // load equipped items
                 context.Player.EquippedWeapon = loadedData.Player?.EquippedWeapon != null ? new Weapon
@@ -158,6 +161,7 @@ namespace TextBasedRPG
                     Description = loadedData.Player.EquippedArmor.Description ?? "No Description",
                     Price = loadedData.Player.EquippedArmor.Price,
                     ArmorDef = loadedData.Player.EquippedArmor.ArmorDef,
+                    ExtraHP = loadedData.Player.EquippedArmor.ExtraHP,
                     RequiredLevel = loadedData.Player.EquippedArmor.RequiredLevel,
                     Rarity = Enum.TryParse<Rarity>(loadedData.Player.EquippedArmor.Rarity, true, out var f) ? f : Rarity.Common,
                 } : null;
@@ -189,6 +193,7 @@ namespace TextBasedRPG
                                 Description = item.Description ?? "No Description",
                                 Price = item.Price,
                                 ArmorDef = item.ArmorDef,
+                                ExtraHP = item.ExtraHP,
                                 RequiredLevel = item.RequiredLevel,
                                 Rarity = Enum.TryParse<Rarity>(item.Rarity, true, out var r) ? r : Rarity.Common,
                             });
@@ -212,6 +217,7 @@ namespace TextBasedRPG
                 context.Player.InvestedSTRPoints = loadedData.Player?.Stats?.InvestedSTR ?? 0;
                 context.Player.InvestedVITPoints = loadedData.Player?.Stats?.InvestedVIT ?? 0;
                 context.Player.InvestedDEXPoints = loadedData.Player?.Stats?.InvestedDEX ?? 0;
+                context.Player.InvestedAGIPoints = loadedData.Player?.Stats?.InvestedAGI ?? 0;
             }
 
             Console.WriteLine("\n[SYSTEM] Game loaded successfully.");
@@ -250,6 +256,7 @@ namespace TextBasedRPG
         public string? Rarity { get; set; }
         public int WeaponATK { get; set; }
         public int ArmorDef { get; set; }
+        public int ExtraHP { get; set; }
         public string? WeaponType { get; set; }
         public int RequiredLevel { get; set; }
         public int Quantity { get; set; }
@@ -261,6 +268,7 @@ namespace TextBasedRPG
         public int? InvestedSTR { get; set; }
         public int? InvestedVIT { get; set; }
         public int? InvestedDEX { get; set; }
+        public int? InvestedAGI { get; set; }
     }
     #endregion
 }

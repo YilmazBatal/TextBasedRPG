@@ -1,4 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Data;
+using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Channels;
 
 namespace TextBasedRPG.Heroes
 {
@@ -26,10 +31,11 @@ namespace TextBasedRPG.Heroes
                 return GameState.HeroSelection;
             }
 
-            HeroPreview(context);
+            UIHelper.HeroPreview(context);
             Console.WriteLine("--- MAIN MENU ---");
             Console.WriteLine($"""
-            [1] Backpack        - Browse in your inventory
+            [0] Detailed Stats  - Detailed Player Information
+            [1] Backpack        - Browse In Your Inventory
             [2] BlackSmith      - Upgrade Equipments
             [3] Training        - Improve Yourself
             [4] Adventure       - Fight Monsters
@@ -49,6 +55,7 @@ namespace TextBasedRPG.Heroes
 
             return input switch
             {
+                "0" => GameState.DetailedStats,
                 "1" => GameState.Inventory,
                 "2" => GameState.Blacksmith,
                 "3" => GameState.Training,
@@ -57,20 +64,7 @@ namespace TextBasedRPG.Heroes
                 "Q" => GameState.Exit,
                 _ => GameState.MainMenu
             };
-        }
-
-        void HeroPreview(GameContext context)
-        {
-            Console.WriteLine("==============================================");
-            Console.WriteLine("   [ AVATAR ]          PLAYER STATUS      ");
-            Console.WriteLine("      O                Class: " + context.Player?.ClassName);
-            Console.WriteLine("     /|\\               Level: " + context.Player?.Level);
-            Console.WriteLine("     / \\               Gold : " + context.Player?.Gold);
-            Console.WriteLine("----------------------------------------------");
-            Console.WriteLine("HP [███████___] 18/22" + " - " + "EXP [█████_____] 25/52");
-            //string hpBar = new string('█', (int)(context.Player?.CurrentHP / 10));
-            //Console.WriteLine($" HP: [{hpBar,-10}] {context.Player.CurrentHP}/{context.Player?.MaxHP}");
-            Console.WriteLine("==============================================");
+            
         }
     }
     public class HeroSelectionState : IMenuState
@@ -98,7 +92,7 @@ namespace TextBasedRPG.Heroes
 
                 string? input = Console.ReadLine();
 
-                Heroes? candidate = input switch
+                Hero? candidate = input switch
                 {
                     "1" => new Warrior(),
                     "2" => new Archer(),
@@ -115,7 +109,7 @@ namespace TextBasedRPG.Heroes
             return GameState.HeroSelection;
         }
         
-        private bool ConfirmSelection(Heroes candidate)
+        private bool ConfirmSelection(Hero candidate)
         {
             candidate.GetStatsSummary();
             Console.WriteLine($"Confirm {candidate.ClassName}? [Y/N]");
@@ -124,6 +118,36 @@ namespace TextBasedRPG.Heroes
     }
 
     // i'll update the context later
+    public class DetailedStatsState : IMenuState
+    {
+        public GameState Update(GameContext context)
+        {
+            Console.Clear();
+            var p = context.Player;
+            Console.WriteLine("================ Detailed Stats for Player ================");
+            Console.WriteLine($"{"Class:",-25} {p?.ClassName}");
+            Console.WriteLine($"{"Level:",-25} {p?.Level,-5} [{p?.CurExp}/{p?.ReqExp}]");
+            Console.WriteLine($"{"Gold:",-25} {p?.Gold}");
+            Console.WriteLine("-----------------------------------------------------------");
+            Console.WriteLine($"{"Total ATK:",-25} {p?.TotalATK:F1}");
+            Console.WriteLine($"{"Total DEF:",-25} {p?.TotalDEF:F1}");
+            Console.WriteLine($"{"Total HP:",-25} {p?.TotalHP}");
+            Console.WriteLine($"{"Crit Rate:",-15} %{p?.CritRate:F1}");
+            Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage}");
+            Console.WriteLine($"{"Evasion:",-25} %{p?.EvasionRate:F1}");
+            Console.WriteLine("------------------- Equipment Data ------------------------");
+            UIHelper.EquipmentCheck(context);
+            Console.WriteLine("------------------- Training Data -------------------------");
+            Console.WriteLine($"{"STR:",-25} {p?.InvestedSTRPoints}");
+            Console.WriteLine($"{"VIT:",-25} {p?.InvestedVITPoints}");
+            Console.WriteLine($"{"DEX:",-25} {p?.InvestedDEXPoints}");
+            Console.WriteLine($"{"AGI:",-25} {p?.InvestedAGIPoints}");
+            Console.WriteLine("===========================================================");
+            Console.Write("Press any key to go back...");
+            Console.ReadKey();
+            return GameState.MainMenu;
+        }
+    }
     public class InventoryState : IMenuState
     {
         public GameState Update(GameContext context)
@@ -150,7 +174,13 @@ namespace TextBasedRPG.Heroes
         public GameState Update(GameContext context)
         {
             Console.Clear();
-            Console.WriteLine("You are at the Training... Press any key to continue.");
+
+            // things to do
+            // Player level &exp , atk, def, hp, crit rate, crit damage
+            // might be extra info about how stats calculated and other things
+            // like : missings rate
+            Console.WriteLine("==========================================================");
+            Console.WriteLine("==========================================================");
             Console.ReadKey();
             return GameState.MainMenu;
         }
@@ -207,6 +237,7 @@ namespace TextBasedRPG.Heroes
                     Console.Write($"[{j + 1}] {item.Name,-20} {item.Type.ToString(),-10} "); SetRarityColor(item.Rarity.ToString()); Console.WriteLine($"{item.Rarity.ToString(),10}"); Console.ResetColor();
                 }
                 Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine($"Player Level: {(context.Player?.Level)}");
                 Console.WriteLine($"Equipped Weapon : {(context.Player?.EquippedWeapon != null ? context.Player.EquippedWeapon.Name : "No Equipped Weapon")}");
                 Console.WriteLine($"Equipped Armor : {(context.Player?.EquippedArmor != null ? context.Player.EquippedArmor.Name : "No Equipped Weapon")}");
                 Console.WriteLine("---------------------------------------------------------");
@@ -274,9 +305,14 @@ namespace TextBasedRPG.Heroes
             {
                 Console.Clear();
                 Console.WriteLine($"========================================");
+                Console.WriteLine($"{"Player Level:",-15} {context.Player?.Level,20}");
+                Console.WriteLine($"{"Current Weapon:",-15} {(context.Player?.EquippedWeapon != null ? context.Player.EquippedWeapon.WeaponATK : 0),20}");
+                Console.WriteLine($"{"Current Armor:",-15} {(context.Player?.EquippedArmor != null ? context.Player.EquippedArmor.ArmorDef : 0),20}");
+                Console.WriteLine($"----------------------------------------");
                 Console.Write($"{"Name:",-15} "); SetRarityColor(item.Rarity.ToString());  Console.WriteLine($"{item.Name, 20}"); Console.ResetColor();
                 Console.WriteLine($"{"Description:",-15} {item.Description,20}");
                 bool isEquippable = false;
+                bool isLevelEnough = false;
                 if (item is Weapon || item is Armor)
                 {
                     isEquippable = true;
@@ -285,11 +321,13 @@ namespace TextBasedRPG.Heroes
                         Console.WriteLine($"{"Type:",-15} {weapon.WeaponType,20}");
                         Console.WriteLine($"{"Attack:",-15} {weapon.WeaponATK,20}");
                         Console.WriteLine($"{"Req. Level:",-15} {weapon.RequiredLevel,20}");
+                        isLevelEnough = true ? context.Player?.Level >= weapon.RequiredLevel : false;
                     }
                     else if (item is Armor armor)
                     {
                         Console.WriteLine($"{"Defense:",-15} {armor.ArmorDef,20}");
                         Console.WriteLine($"{"Req. Level:",-15} {armor.RequiredLevel,20}");
+                        isLevelEnough = true ? context.Player?.Level >= armor.RequiredLevel : false;
                     }
                 }   else if (item is Material material) {
                     Console.WriteLine($"{"Quantity:",-15} {material.Quantity,20}");
@@ -315,45 +353,52 @@ namespace TextBasedRPG.Heroes
                     // TODO: If I add more items like rings or necklaces later, 
                     // I should create an "Equipment" class under "Item". 
                     // This way, I can move RequiredLevel there and clean these 'if' blocks.
-                    if (item is Weapon w && w.RequiredLevel > context.Player?.Level || item is Armor a && a.RequiredLevel > context.Player?.Level)
+                    if (isLevelEnough)
+                    {
+                        if (item is Weapon w && w.RequiredLevel > context.Player?.Level || item is Armor a && a.RequiredLevel > context.Player?.Level)
+                        {
+                            Console.WriteLine("[System] Player level is not enough!");
+                            Thread.Sleep(1000);
+                            continue;
+                        }
+
+                        if (item is Weapon weapon)
+                        {
+                            if (context.Player?.EquippedWeapon != null)
+                            {
+                                context.Player?.Inventory?.Add(context.Player.EquippedWeapon);
+                                context.Player?.EquippedWeapon = weapon;
+                                context.Player?.Inventory?.Remove(weapon);
+                                Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon.Name);
+                            }
+                            else if (context.Player?.EquippedWeapon == null)
+                            {
+                                context.Player?.EquippedWeapon = weapon;
+                                context.Player?.Inventory?.Remove(weapon);
+                                Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon?.Name);
+
+                            }
+                        }
+                        else if (item is Armor armor)
+                        {
+                            if (context.Player?.EquippedArmor != null)
+                            {
+                                context.Player?.Inventory?.Add(context.Player.EquippedArmor);
+                                context.Player?.EquippedArmor = armor;
+                                context.Player?.Inventory?.Remove(armor);
+                                Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor.Name);
+                            }
+                            else if (context.Player?.EquippedArmor == null)
+                            {
+                                context.Player?.EquippedArmor = armor;
+                                context.Player?.Inventory?.Remove(armor);
+                                Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor?.Name);
+                            }
+                        }
+                    }
+                    else
                     {
                         Console.WriteLine("[System] Player level is not enough!");
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-
-                    if (item is Weapon weapon)
-                    {
-                        if (context.Player?.EquippedWeapon != null)
-                        {
-                            context.Player?.Inventory?.Add(context.Player.EquippedWeapon);
-                            context.Player?.EquippedWeapon = weapon;
-                            context.Player?.Inventory?.Remove(weapon);
-                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon.Name);
-                        }
-                        else if (context.Player?.EquippedWeapon == null)
-                        {
-                            context.Player?.EquippedWeapon = weapon;
-                            context.Player?.Inventory?.Remove(weapon);
-                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedWeapon?.Name);
-
-                        }
-                    }
-                    else if (item is Armor armor)
-                    {
-                        if (context.Player?.EquippedArmor != null)
-                        {
-                            context.Player?.Inventory?.Add(context.Player.EquippedArmor);
-                            context.Player?.EquippedArmor = armor;
-                            context.Player?.Inventory?.Remove(armor);
-                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor.Name);
-                        }
-                        else if (context.Player?.EquippedArmor == null)
-                        {
-                            context.Player?.EquippedArmor = armor;
-                            context.Player?.Inventory?.Remove(armor);
-                            Console.WriteLine("[System] Equipped the " + context.Player?.EquippedArmor?.Name);
-                        }
                     }
                     Thread.Sleep(1000);
                     return;
@@ -395,6 +440,49 @@ namespace TextBasedRPG.Heroes
                 default: Console.ResetColor(); break;
             }
         }
+        public static void HeroPreview(GameContext context)
+        {
+            Console.WriteLine("==============================================");
+            Console.WriteLine($" [ AVATAR ]   PLAYER STATUS      ");
+            Console.WriteLine($"     O        Class: {context.Player?.ClassName}");
+            Console.WriteLine($"    /|\\       Level: {context.Player?.Level}");
+            Console.WriteLine($"    / \\       Gold: {context.Player?.Gold}");
+            EquipmentCheck(context);
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("HP [███████___] 18/22" + " - " + "EXP [█████_____] 25/52");
+            //string hpBar = new string('█', (int)(context.Player?.CurrentHP / 10));
+            //Console.WriteLine($" HP: [{hpBar,-10}] {context.Player.CurrentHP}/{context.Player?.MaxHP}");
+            Console.WriteLine("==============================================");
+        }
+        /// <summary>
+        /// TODO : when you change the Item inheritance come back to here and refactor/optimize the code.
+        /// Prints out the Equipped item datas
+        /// </summary>
+        /// <param name="context"></param>
+        public static void EquipmentCheck(GameContext context)
+        {
+            List<(string Name, Item? item)> equipments = new List<(string Name, Item? item)> {
+                ("Weapon", context.Player?.EquippedWeapon),
+                ("Armor", context.Player?.EquippedArmor),
+                ("Necklace", null),
+                //("Ring", null)
+                }; // this is gonna be dynamic in the future
+
+            foreach (var equipment in equipments)
+            {
+                if (equipment.item == null)
+                {
+                    Console.WriteLine($"{equipment.Name} : No {equipment.Name} is equipped");
+                }
+                else
+                {
+                    Console.Write($"{equipment.Name} : ");
+                    SetRarityColor(equipment.item.Rarity.ToString());
+                    Console.WriteLine($"{equipment.item.Name,-20}");
+                    Console.ResetColor();
+                }
+            }
+        }
     }
     /// <summary>
     /// Manages the overall game flow, including state transitions, context management, and integration with the save
@@ -426,6 +514,7 @@ namespace TextBasedRPG.Heroes
             _states = new Dictionary<GameState, IMenuState> {
                 { GameState.HeroSelection, new HeroSelectionState(_saveService) },
                 { GameState.MainMenu, new MainMenuState(_saveService) },
+                { GameState.DetailedStats, new DetailedStatsState() },
                 { GameState.Inventory, new InventoryState() },
                 { GameState.Blacksmith, new BlacksmithState() },
                 { GameState.Training, new TrainingState() },
@@ -455,6 +544,6 @@ namespace TextBasedRPG.Heroes
     /// </summary>
     public class GameContext
     {
-        public Heroes? Player { get; set; }
+        public Hero? Player { get; set; }
     }
 }

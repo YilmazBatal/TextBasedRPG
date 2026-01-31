@@ -2,6 +2,7 @@
 {
     HeroSelection,
     MainMenu,
+    DetailedStats,
     Inventory,
     Blacksmith,
     Training,
