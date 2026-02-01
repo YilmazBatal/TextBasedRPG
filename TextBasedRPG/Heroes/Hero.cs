@@ -1,5 +1,4 @@
-﻿using System.Buffers.Text;
-using TextBasedRPG.Interfaces;
+﻿using TextBasedRPG.Interfaces;
 
 namespace TextBasedRPG.Heroes
 {
@@ -29,9 +28,10 @@ namespace TextBasedRPG.Heroes
         // Currency
         public int Gold { get; internal set; } = 100;
         // Advanced stats             
-        public double TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (InvestedSTRPoints * 1.5);
-        public double TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (InvestedVITPoints * 1.5);
-        public double TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (InvestedVITPoints * 1.5);
+        public int TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (int)Math.Round(InvestedSTRPoints * 1.5);
+        public int TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
+        public int TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
+        public int CurHP { get; internal set; }
         public double CritRate => 5 + InvestedDEXPoints * 1.0 / 3.0; // %
         public double CritDamage => 150 + InvestedSTRPoints; // %
         public double EvasionRate => 5 + InvestedAGIPoints * 1.0 / 3.0;

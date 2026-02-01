@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TextBasedRPG.Entities;
 using TextBasedRPG.Heroes;
 
 namespace TextBasedRPG.Managers
@@ -6,6 +7,7 @@ namespace TextBasedRPG.Managers
     internal class DataManager : ISaveService
     {
         private readonly string _savePath = "data.json";
+        private readonly string _entityPath = "../../../Data/Entities.json";
 
         #region Save
         public void SaveGame(GameContext context)
@@ -22,6 +24,7 @@ namespace TextBasedRPG.Managers
                     Class = context.Player.ClassName,
                     Level = context.Player.Level,
                     Experience = context.Player.CurExp,
+                    CurHP = context.Player.CurHP,
                     Gold = context.Player.Gold,
                     EquippedWeapon = context.Player.EquippedWeapon != null ? new ItemData
                     {
@@ -127,6 +130,8 @@ namespace TextBasedRPG.Managers
             // Convert to context so we can use it in the game
             var context = new GameContext();
 
+            context.Entities = LoadEntities();
+
             // Data Mapping
             if (loadedData != null)
             {
@@ -143,6 +148,7 @@ namespace TextBasedRPG.Managers
                 context.Player.Gold = loadedData.Player?.Gold ?? 100;
                 context.Player.Level = loadedData.Player?.Level ?? 1;
                 context.Player.CurExp = loadedData.Player?.Experience ?? 0;
+                context.Player.CurHP = loadedData.Player?.CurHP ?? 0;
 
                 // load equipped items
                 context.Player.EquippedWeapon = loadedData.Player?.EquippedWeapon != null ? new Weapon
@@ -226,6 +232,18 @@ namespace TextBasedRPG.Managers
             Thread.Sleep(1000);
             return context;
         }
+        
+        public List<Entity> LoadEntities()
+        {
+            if (!File.Exists(_entityPath))
+            {
+                Console.WriteLine($"[ERROR] File not found! Path: {Path.GetFullPath(_entityPath)}");
+                return new List<Entity>();
+            }
+            string jsonString = File.ReadAllText(_entityPath);
+            List<Entity>? loadedData = JsonSerializer.Deserialize<List<Entity>>(jsonString);
+            return loadedData ?? new List<Entity>();
+        }
         #endregion
     }
     #region Data Models for Serialization
@@ -233,6 +251,7 @@ namespace TextBasedRPG.Managers
     {
         public Player? Player { get; set; }
         public bool IsAutoSaveOn { get; set; } = true;
+        public List<Entity>? EntityList { get; set; }
     }
     public class Player
     {
@@ -240,6 +259,7 @@ namespace TextBasedRPG.Managers
         public int? Level { get; set; }
         public int? Experience { get; set; }
         public int? Gold { get; set; }
+        public int? CurHP { get; set; }
         public ItemData? EquippedWeapon { get; set; }
         public ItemData? EquippedArmor { get; set; }
         public List<ItemData>? Inventory { get; set; }
@@ -272,6 +292,20 @@ namespace TextBasedRPG.Managers
         public int? InvestedVIT { get; set; }
         public int? InvestedDEX { get; set; }
         public int? InvestedAGI { get; set; }
+    }
+    public class Entity
+    {
+        public string ID = string.Empty;
+        public string Name = string.Empty;
+        public int BaseHP { get; set; }
+        public int BaseATK { get; set; }
+        public int BaseDEF { get; set; }
+        public int Level { get; set; }
+        public int Scaling { get; set; }
+        public int EliteChance { get; set; }
+        public Dictionary<string, int> LootTable { get; set; } = new (); // ID, Chances%
+        public int GoldDrop { get; set; }
+        public string EntityType = string.Empty;
     }
     #endregion
 }

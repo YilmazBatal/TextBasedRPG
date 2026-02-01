@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Entities;
+using TextBasedRPG.Heroes;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.States;
 
@@ -6,10 +7,6 @@ namespace TextBasedRPG.Managers
 {
     public static class UIHelper
     {
-        public static void Pagination(GameContext context)
-        {
-
-        }
         public static void BackpackPagination(GameContext context)
         {
             var inventory = context.Player?.Inventory;
@@ -244,17 +241,26 @@ namespace TextBasedRPG.Managers
         }
         public static void HeroPreview(GameContext context)
         {
+            var p = context.Player;
             Console.WriteLine("==============================================");
             Console.WriteLine($" [ AVATAR ]   PLAYER STATUS      ");
-            Console.WriteLine($"     O        Class: {context.Player?.ClassName}");
-            Console.WriteLine($"    /|\\       Level: {context.Player?.Level}");
-            Console.WriteLine($"    / \\       Gold: {context.Player?.Gold}");
+            Console.WriteLine($"     O        Class: {p?.ClassName}");
+            Console.WriteLine($"    /|\\       Level: {p?.Level}");
+            Console.WriteLine($"    / \\       Gold: {p?.Gold}");
             EquipmentCheck(context);
             Console.WriteLine("----------------------------------------------");
-            Console.WriteLine("HP [███████___] 18/22" + " - " + "EXP [█████_____] 25/52");
-            //string hpBar = new string('█', (int)(context.Player?.CurrentHP / 10));
-            //Console.WriteLine($" HP: [{hpBar,-10}] {context.Player.CurrentHP}/{context.Player?.MaxHP}");
+            Console.WriteLine($"XP [{BarFiller(p.CurExp, p.ReqExp)}] {p?.CurExp.ToString()}/{p?.ReqExp.ToString()} - HP [{BarFiller(p.CurHP, p.TotalHP)}] {p?.CurHP.ToString()}/{p?.TotalHP.ToString()}");
             Console.WriteLine("==============================================");
+        }
+        public static string BarFiller(int min, int max)
+        {
+            string fill = "";
+            var ratio = (double)min / max;
+            for (int i = 0; i < 10; i++)
+            {
+                fill += (ratio > (i * 0.1)) ? "█" : "_";
+            }
+            return fill;
         }
         
         /// <summary>
@@ -342,5 +348,6 @@ namespace TextBasedRPG.Managers
     {
         public Hero? Player { get; set; }
         public bool IsAutoSaveOn { get; set; }
+        public List<Entity>? Entities { get; set; }
     }
 }

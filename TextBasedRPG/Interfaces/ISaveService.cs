@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Managers;
+﻿using TextBasedRPG.Entities;
+using TextBasedRPG.Managers;
 
 public interface ISaveService
 {
