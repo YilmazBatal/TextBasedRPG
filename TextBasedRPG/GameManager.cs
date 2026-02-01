@@ -1,11 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Channels;
-
-namespace TextBasedRPG.Heroes
+﻿namespace TextBasedRPG.Heroes
 {
     public interface IMenuState
     {
@@ -132,12 +125,14 @@ namespace TextBasedRPG.Heroes
             Console.WriteLine($"{"Total ATK:",-25} {p?.TotalATK:F1}");
             Console.WriteLine($"{"Total DEF:",-25} {p?.TotalDEF:F1}");
             Console.WriteLine($"{"Total HP:",-25} {p?.TotalHP}");
-            Console.WriteLine($"{"Crit Rate:",-15} %{p?.CritRate:F1}");
-            Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage}");
+            Console.WriteLine($"{"Crit Rate:",-25} %{p?.CritRate:F1}");
+            Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage:F1}");
             Console.WriteLine($"{"Evasion:",-25} %{p?.EvasionRate:F1}");
             Console.WriteLine("------------------- Equipment Data ------------------------");
             UIHelper.EquipmentCheck(context);
             Console.WriteLine("------------------- Training Data -------------------------");
+            Console.WriteLine($"Unused Training Points: {p?.UnusedStatPoints}");
+            Console.WriteLine($"Total Points Invested: {p?.InvestedSTRPoints + p?.InvestedVITPoints + p?.InvestedDEXPoints + p?.InvestedAGIPoints}");
             Console.WriteLine($"{"STR:",-25} {p?.InvestedSTRPoints}");
             Console.WriteLine($"{"VIT:",-25} {p?.InvestedVITPoints}");
             Console.WriteLine($"{"DEX:",-25} {p?.InvestedDEXPoints}");
@@ -174,14 +169,53 @@ namespace TextBasedRPG.Heroes
         public GameState Update(GameContext context)
         {
             Console.Clear();
+            var p = context.Player;
+            int totalPointsSpent = p.InvestedSTRPoints + p.InvestedVITPoints + p.InvestedDEXPoints + p.InvestedAGIPoints;
+            Console.WriteLine("==========================================================");
+            Console.WriteLine("Welcome to Training Grounds!");
+            Console.WriteLine("Unused Training Points: " + p.UnusedStatPoints);
+            Console.WriteLine("Total Points Invested: " + totalPointsSpent);
+            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine($"[1] STR     - Increases attack & critical damage");
+            Console.WriteLine($"[2] VIT     - Increases defence & health");
+            Console.WriteLine($"[3] DEX     - Increases critical hit chance.");
+            Console.WriteLine($"[4] AGI     - Increases chances to dodge");
+            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine("==========================================================");
 
-            // things to do
-            // Player level &exp , atk, def, hp, crit rate, crit damage
-            // might be extra info about how stats calculated and other things
-            // like : missings rate
-            Console.WriteLine("==========================================================");
-            Console.WriteLine("==========================================================");
-            Console.ReadKey();
+            Console.Write($"Selection: ");
+            string? selection = Console.ReadLine();
+            Console.Write($"Amount to invest: ");
+            string? amountInput = Console.ReadLine();
+
+            if (int.TryParse(amountInput, out int amount))
+            {
+                if (amount > 0 && amount <= p.UnusedStatPoints)
+                {
+                    switch (selection)
+                    {
+                        case "1": p.InvestedSTRPoints += amount; break;
+                        case "2": p.InvestedVITPoints += amount; break;
+                        case "3": p.InvestedDEXPoints += amount; break;
+                        case "4": p.InvestedAGIPoints += amount; break;
+                        default:
+                            Console.WriteLine("[SYSTEM] Invalid selection");
+                            Thread.Sleep(1000);
+                            return GameState.Training;
+                    }
+
+                    p.UnusedStatPoints -= amount;
+                    Console.WriteLine($"[SYSTEM] Invested {amount} points");
+                    Thread.Sleep(1000);
+                }
+                else
+                {
+                    Console.WriteLine("[SYSTEM] Invalid amount or not enough points");
+                    Thread.Sleep(1000);
+                    return GameState.Training;
+                }
+            }
+
             return GameState.MainMenu;
         }
     }
