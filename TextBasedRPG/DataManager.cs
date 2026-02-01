@@ -3,11 +3,6 @@ using TextBasedRPG.Heroes;
 
 namespace TextBasedRPG
 {
-    public interface ISaveService
-    {
-        void SaveGame(GameContext context);
-        GameContext LoadGame();
-    }
     internal class DataManager : ISaveService
     {
         private readonly string _savePath = "data.json";

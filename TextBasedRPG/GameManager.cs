@@ -1,265 +1,14 @@
-﻿namespace TextBasedRPG.Heroes
+﻿using TextBasedRPG.Interfaces;
+using TextBasedRPG.States;
+
+namespace TextBasedRPG.Heroes
 {
-    public interface IMenuState
-    {
-        GameState Update(GameContext context);
-    }
-
-    #region Menus
-    public class MainMenuState : IMenuState
-    {
-        private readonly ISaveService _saveService;
-
-        public MainMenuState(ISaveService saveService)
-        {
-            _saveService = saveService;
-        }
-
-        public GameState Update(GameContext context)
-        {
-            if (context.IsAutoSaveOn) _saveService.SaveGame(context);
-            
-            Console.Clear();
-
-            if (context.Player == null)
-            {
-                return GameState.HeroSelection;
-            }
-
-
-            UIHelper.HeroPreview(context);
-            Console.WriteLine("--- MAIN MENU ---");
-            Console.WriteLine($"""
-            [0] Detailed Stats  - Detailed Player Information
-            [1] Backpack        - Browse In Your Inventory
-            [2] BlackSmith      - Upgrade Equipments
-            [3] Training        - Improve Yourself
-            [4] Adventure       - Fight Monsters
-            [5] Region Boss     - Challange Boss
-            [A] Auto Save       - Toggle Auto Save (Currently {(context.IsAutoSaveOn ? "ON" : "OFF")})
-            [S] Save Game       - Save Progress
-            [Q] Quit
-            """);
-            string? input = Console.ReadLine()?.ToUpper();
-
-            if (input == "A")
-            {
-                if (context.IsAutoSaveOn)
-                {
-                    context.IsAutoSaveOn = false;
-                    Console.WriteLine("[SYSTEM] Auto Save is now OFF");
-                }
-                else
-                {
-                    context.IsAutoSaveOn = true;
-                    Console.WriteLine("[SYSTEM] Auto Save is now ON");
-                }
-                Thread.Sleep(1000);
-                return GameState.MainMenu;
-            }
-
-            if (input == "S")
-            {
-                _saveService.SaveGame(context);
-                return GameState.MainMenu;
-            }
-
-            return input switch
-            {
-                "0" => GameState.DetailedStats,
-                "1" => GameState.Inventory,
-                "2" => GameState.Blacksmith,
-                "3" => GameState.Training,
-                "4" => GameState.Adventure,
-                "5" => GameState.RegionBoss,
-                "Q" => GameState.Exit,
-                _ => GameState.MainMenu
-            };
-            
-        }
-    }
-    public class HeroSelectionState : IMenuState
-    {
-        private readonly ISaveService _saveService;
-
-        public HeroSelectionState(ISaveService saveService)
-        {
-            _saveService = saveService;
-        }
-
-        public GameState Update(GameContext context)
-        {
-            while (context.Player == null)
-            {
-                Console.Clear();
-                Console.WriteLine("Please choose a hero to overview Eg. 1");
-                Console.WriteLine($"""
-                 ---------------------
-                    [1]. Warrior 
-                    [2]. Archer
-                    More Heroes soon...
-                 ---------------------
-                 """);
-
-                string? input = Console.ReadLine();
-
-                Hero? candidate = input switch
-                {
-                    "1" => new Warrior(),
-                    "2" => new Archer(),
-                    _ => null
-                };
-                
-                if (candidate != null && ConfirmSelection(candidate))
-                {
-                    context.Player = candidate;
-                    _saveService.SaveGame(context);
-                    return GameState.MainMenu;
-                }
-            }
-            return GameState.HeroSelection;
-        }
-        
-        private bool ConfirmSelection(Hero candidate)
-        {
-            candidate.GetStatsSummary();
-            Console.WriteLine($"Confirm {candidate.ClassName}? [Y/N]");
-            return Console.ReadLine()?.ToUpper() == "Y";
-        }
-    }
-
-    // i'll update the context later
-    public class DetailedStatsState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            var p = context.Player;
-            Console.WriteLine("================ Detailed Stats for Player ================");
-            Console.WriteLine($"{"Class:",-25} {p?.ClassName}");
-            Console.WriteLine($"{"Level:",-25} {p?.Level,-5} [{p?.CurExp}/{p?.ReqExp}]");
-            Console.WriteLine($"{"Gold:",-25} {p?.Gold}");
-            Console.WriteLine("-----------------------------------------------------------");
-            Console.WriteLine($"{"Total ATK:",-25} {p?.TotalATK:F1}");
-            Console.WriteLine($"{"Total DEF:",-25} {p?.TotalDEF:F1}");
-            Console.WriteLine($"{"Total HP:",-25} {p?.TotalHP}");
-            Console.WriteLine($"{"Crit Rate:",-25} %{p?.CritRate:F1}");
-            Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage:F1}");
-            Console.WriteLine($"{"Evasion:",-25} %{p?.EvasionRate:F1}");
-            Console.WriteLine("------------------- Equipment Data ------------------------");
-            UIHelper.EquipmentCheck(context);
-            Console.WriteLine("------------------- Training Data -------------------------");
-            Console.WriteLine($"Unused Training Points: {p?.UnusedStatPoints}");
-            Console.WriteLine($"Total Points Invested: {p?.InvestedSTRPoints + p?.InvestedVITPoints + p?.InvestedDEXPoints + p?.InvestedAGIPoints}");
-            Console.WriteLine($"{"STR:",-25} {p?.InvestedSTRPoints}");
-            Console.WriteLine($"{"VIT:",-25} {p?.InvestedVITPoints}");
-            Console.WriteLine($"{"DEX:",-25} {p?.InvestedDEXPoints}");
-            Console.WriteLine($"{"AGI:",-25} {p?.InvestedAGIPoints}");
-            Console.WriteLine("===========================================================");
-            Console.Write("Press any key to go back...");
-            Console.ReadKey();
-            return GameState.MainMenu;
-        }
-    }
-    public class InventoryState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            UIHelper.BackpackPagination(context);
-            return GameState.MainMenu;
-        }
-        
-    }
-    public class BlacksmithState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            Console.WriteLine("You are at the Blacksmith... Press any key to continue.");
-            
-            Console.ReadKey();
-            return GameState.MainMenu;
-        }
-    }
-    public class TrainingState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            var p = context.Player;
-            int totalPointsSpent = p.InvestedSTRPoints + p.InvestedVITPoints + p.InvestedDEXPoints + p.InvestedAGIPoints;
-            Console.WriteLine("==========================================================");
-            Console.WriteLine("Welcome to Training Grounds!");
-            Console.WriteLine("Unused Training Points: " + p.UnusedStatPoints);
-            Console.WriteLine("Total Points Invested: " + totalPointsSpent);
-            Console.WriteLine("----------------------------------------------------------");
-            Console.WriteLine($"[1] STR     - Increases attack & critical damage");
-            Console.WriteLine($"[2] VIT     - Increases defence & health");
-            Console.WriteLine($"[3] DEX     - Increases critical hit chance.");
-            Console.WriteLine($"[4] AGI     - Increases chances to dodge");
-            Console.WriteLine("----------------------------------------------------------");
-            Console.WriteLine("==========================================================");
-
-            Console.Write($"Selection: ");
-            string? selection = Console.ReadLine();
-            Console.Write($"Amount to invest: ");
-            string? amountInput = Console.ReadLine();
-
-            if (int.TryParse(amountInput, out int amount))
-            {
-                if (amount > 0 && amount <= p.UnusedStatPoints)
-                {
-                    switch (selection)
-                    {
-                        case "1": p.InvestedSTRPoints += amount; break;
-                        case "2": p.InvestedVITPoints += amount; break;
-                        case "3": p.InvestedDEXPoints += amount; break;
-                        case "4": p.InvestedAGIPoints += amount; break;
-                        default:
-                            Console.WriteLine("[SYSTEM] Invalid selection");
-                            Thread.Sleep(1000);
-                            return GameState.Training;
-                    }
-
-                    p.UnusedStatPoints -= amount;
-                    Console.WriteLine($"[SYSTEM] Invested {amount} points");
-                    Thread.Sleep(1000);
-                }
-                else
-                {
-                    Console.WriteLine("[SYSTEM] Invalid amount or not enough points");
-                    Thread.Sleep(1000);
-                    return GameState.Training;
-                }
-            }
-
-            return GameState.MainMenu;
-        }
-    }
-    public class AdventureState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            Console.WriteLine("You are at the Adventure... Press any key to continue.");
-            Console.ReadKey();
-            return GameState.MainMenu;
-        }
-    }
-    public class RegionBossState : IMenuState
-    {
-        public GameState Update(GameContext context)
-        {
-            Console.Clear();
-            Console.WriteLine("You are at the Region Boss... Press any key to continue.");
-            Console.ReadKey();
-            return GameState.MainMenu;
-        }
-    }
-    #endregion
     public static class UIHelper
     {
+        public static void Pagination(GameContext context)
+        {
+
+        }
         public static void BackpackPagination(GameContext context)
         {
             var inventory = context.Player?.Inventory;
@@ -506,6 +255,7 @@
             //Console.WriteLine($" HP: [{hpBar,-10}] {context.Player.CurrentHP}/{context.Player?.MaxHP}");
             Console.WriteLine("==============================================");
         }
+        
         /// <summary>
         /// TODO : when you change the Item inheritance come back to here and refactor/optimize the code.
         /// Prints out the Equipped item datas
@@ -536,14 +286,7 @@
             }
         }
     }
-    /// <summary>
-    /// Manages the overall game flow, including state transitions, context management, and integration with the save
-    /// system.
-    /// </summary>
-    /// <remarks>The GameManager coordinates the main game loop and handles switching between different game
-    /// states, such as menus and gameplay areas. It loads and saves game progress using the provided save service. This
-    /// class is typically instantiated once at application startup and remains active for the duration of the game
-    /// session.</remarks>
+
     public class GameManager
     {
         private GameState _currentState = GameState.HeroSelection; // Initial Menu
@@ -571,7 +314,7 @@
                 { GameState.Blacksmith, new BlacksmithState() },
                 { GameState.Training, new TrainingState() },
                 { GameState.Adventure, new AdventureState() },
-                { GameState.RegionBoss, new RegionBossState() },
+                { GameState.Dungeon, new DungeonState() },
             };
         }
 
