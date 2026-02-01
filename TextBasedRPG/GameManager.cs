@@ -17,12 +17,15 @@
 
         public GameState Update(GameContext context)
         {
+            if (context.IsAutoSaveOn) _saveService.SaveGame(context);
+            
             Console.Clear();
 
             if (context.Player == null)
             {
                 return GameState.HeroSelection;
             }
+
 
             UIHelper.HeroPreview(context);
             Console.WriteLine("--- MAIN MENU ---");
@@ -33,16 +36,31 @@
             [3] Training        - Improve Yourself
             [4] Adventure       - Fight Monsters
             [5] Region Boss     - Challange Boss
+            [A] Auto Save       - Toggle Auto Save (Currently {(context.IsAutoSaveOn ? "ON" : "OFF")})
             [S] Save Game       - Save Progress
             [Q] Quit
             """);
             string? input = Console.ReadLine()?.ToUpper();
 
+            if (input == "A")
+            {
+                if (context.IsAutoSaveOn)
+                {
+                    context.IsAutoSaveOn = false;
+                    Console.WriteLine("[SYSTEM] Auto Save is now OFF");
+                }
+                else
+                {
+                    context.IsAutoSaveOn = true;
+                    Console.WriteLine("[SYSTEM] Auto Save is now ON");
+                }
+                Thread.Sleep(1000);
+                return GameState.MainMenu;
+            }
+
             if (input == "S")
             {
                 _saveService.SaveGame(context);
-                Console.WriteLine("\nProgress saved to savegame.json!");
-                Thread.Sleep(1000);
                 return GameState.MainMenu;
             }
 
@@ -579,5 +597,6 @@
     public class GameContext
     {
         public Hero? Player { get; set; }
+        public bool IsAutoSaveOn { get; set; }
     }
 }

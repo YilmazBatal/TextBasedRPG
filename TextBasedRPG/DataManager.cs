@@ -20,6 +20,8 @@ namespace TextBasedRPG
             // Mapping
             var saveData = new Data
             {
+                IsAutoSaveOn = context.IsAutoSaveOn,
+
                 Player = new Player
                 {
                     Class = context.Player.ClassName,
@@ -103,7 +105,10 @@ namespace TextBasedRPG
             File.WriteAllText(_savePath, jsonString);
 
             Console.WriteLine("\n[SYSTEM] Game progress saved successfully.");
-            Thread.Sleep(1000);
+            Thread.Sleep(750);
+            Console.WriteLine( $"\n[SYSTEM] Auto Save is {(saveData.IsAutoSaveOn ? "ENABLED" : "DISABLED")}.");
+            Thread.Sleep(1250);
+
         }
         #endregion
         
@@ -130,6 +135,8 @@ namespace TextBasedRPG
             // Data Mapping
             if (loadedData != null)
             {
+                context.IsAutoSaveOn = loadedData.IsAutoSaveOn;
+
                 context.Player = (loadedData.Player?.Class switch
                 {
                     "Warrior" => new Warrior(),
@@ -230,6 +237,7 @@ namespace TextBasedRPG
     public class Data
     {
         public Player? Player { get; set; }
+        public bool IsAutoSaveOn { get; set; } = true;
     }
     public class Player
     {
