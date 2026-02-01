@@ -1,5 +1,5 @@
 ﻿using TextBasedRPG;
-using TextBasedRPG.Heroes;
+using TextBasedRPG.Managers;
 
 Console.Title = "Text RPG";
 Console.WriteLine("""

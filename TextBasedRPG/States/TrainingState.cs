@@ -1,5 +1,5 @@
-﻿using TextBasedRPG.Heroes;
-using TextBasedRPG.Interfaces;
+﻿using TextBasedRPG.Interfaces;
+using TextBasedRPG.Managers;
 
 public class TrainingState : IMenuState
 {

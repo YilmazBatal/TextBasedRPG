@@ -1,4 +1,4 @@
-﻿using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Managers;
 
 public interface ISaveService
 {

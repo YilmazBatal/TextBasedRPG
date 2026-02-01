@@ -1,7 +1,8 @@
-﻿using TextBasedRPG.Interfaces;
+﻿using TextBasedRPG.Heroes;
+using TextBasedRPG.Interfaces;
 using TextBasedRPG.States;
 
-namespace TextBasedRPG.Heroes
+namespace TextBasedRPG.Managers
 {
     public static class UIHelper
     {

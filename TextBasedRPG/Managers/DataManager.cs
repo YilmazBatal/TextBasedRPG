@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using TextBasedRPG.Heroes;
 
-namespace TextBasedRPG
+namespace TextBasedRPG.Managers
 {
     internal class DataManager : ISaveService
     {
