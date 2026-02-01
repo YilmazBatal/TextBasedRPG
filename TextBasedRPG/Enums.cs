@@ -7,7 +7,7 @@
     Blacksmith,
     Training,
     Adventure,
-    RegionBoss,
+    Dungeon,
     Exit
 }
 public enum WeaponType { Sword, Bow, Staff }
