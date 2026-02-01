@@ -1,0 +1,167 @@
+[
+  /* --- WEAPONS (W0001 - W0005) --- */
+  {
+    "ID": "W0001",
+    "Type": "Weapon",
+    "Name": "Rusty Sword",
+    "Description": "An old, rusty blade. Better than bare hands.",
+    "Price": 15,
+    "Rarity": "Common",
+    "WeaponATK": 5,
+    "WeaponType": "Sword",
+    "RequiredLevel": 1
+  },
+  {
+    "ID": "W0002",
+    "Type": "Weapon",
+    "Name": "Iron Longsword",
+    "Description": "Standard issue soldier weapon.",
+    "Price": 150,
+    "Rarity": "Uncommon",
+    "WeaponATK": 18,
+    "WeaponType": "Sword",
+    "RequiredLevel": 3
+  },
+  {
+    "ID": "W0003",
+    "Type": "Weapon",
+    "Name": "Hunter's Bow",
+    "Description": "Sturdy bow made of yew wood.",
+    "Price": 200,
+    "Rarity": "Rare",
+    "WeaponATK": 22,
+    "WeaponType": "Bow",
+    "RequiredLevel": 5
+  },
+  {
+    "ID": "W0004",
+    "Type": "Weapon",
+    "Name": "War Hammer",
+    "Description": "Crushes armor with ease.",
+    "Price": 500,
+    "Rarity": "Epic",
+    "WeaponATK": 45,
+    "WeaponType": "Hammer",
+    "RequiredLevel": 8
+  },
+  {
+    "ID": "W0005",
+    "Type": "Weapon",
+    "Name": "Dragon Slayer",
+    "Description": "A legendary blade saID to pierce dragon scales.",
+    "Price": 2500,
+    "Rarity": "Legendary",
+    "WeaponATK": 85,
+    "WeaponType": "Sword",
+    "RequiredLevel": 15
+  },
+
+  /* --- ARMORS (A0001 - A0005) --- */
+  {
+    "ID": "A0001",
+    "Type": "Armor",
+    "Name": "Tattered Shirt",
+    "Description": "Provides minimal protection.",
+    "Price": 10,
+    "Rarity": "Common",
+    "ArmorDef": 2,
+    "ExtraHP": 5,
+    "RequiredLevel": 1
+  },
+  {
+    "ID": "A0002",
+    "Type": "Armor",
+    "Name": "Leather Vest",
+    "Description": "Lightweight and flexible.",
+    "Price": 120,
+    "Rarity": "Uncommon",
+    "ArmorDef": 8,
+    "ExtraHP": 20,
+    "RequiredLevel": 3
+  },
+  {
+    "ID": "A0003",
+    "Type": "Armor",
+    "Name": "Chainmail",
+    "Description": "Interlocking metal rings.",
+    "Price": 350,
+    "Rarity": "Rare",
+    "ArmorDef": 18,
+    "ExtraHP": 50,
+    "RequiredLevel": 6
+  },
+  {
+    "ID": "A0004",
+    "Type": "Armor",
+    "Name": "Steel Plate",
+    "Description": "Heavy protection for knights.",
+    "Price": 900,
+    "Rarity": "Epic",
+    "ArmorDef": 40,
+    "ExtraHP": 100,
+    "RequiredLevel": 10
+  },
+  {
+    "ID": "A0005",
+    "Type": "Armor",
+    "Name": "VoID Armor",
+    "Description": "Armor forged from the darkness itself.",
+    "Price": 3000,
+    "Rarity": "Legendary",
+    "ArmorDef": 75,
+    "ExtraHP": 250,
+    "RequiredLevel": 20
+  },
+
+  /* --- MATERIALS (M0001 - M0005) --- */
+  {
+    "ID": "M0001",
+    "Type": "Material",
+    "Name": "Slime Gel",
+    "Description": "Sticky green goo.",
+    "Price": 2,
+    "Rarity": "Common",
+    "Quantity": 1,
+    "MaxStack": 64
+  },
+  {
+    "ID": "M0002",
+    "Type": "Material",
+    "Name": "Wolf Fur",
+    "Description": "Warm and soft.",
+    "Price": 8,
+    "Rarity": "Common",
+    "Quantity": 1,
+    "MaxStack": 64
+  },
+  {
+    "ID": "M0003",
+    "Type": "Material",
+    "Name": "Iron Ore",
+    "Description": "Raw metal ready for smelting.",
+    "Price": 25,
+    "Rarity": "Uncommon",
+    "Quantity": 1,
+    "MaxStack": 64
+  },
+  {
+    "ID": "M0004",
+    "Type": "Material",
+    "Name": "Magic Dust",
+    "Description": "Glowing powder.",
+    "Price": 100,
+    "Rarity": "Rare",
+    "Quantity": 1,
+    "MaxStack": 64
+  },
+  {
+    "ID": "M0005",
+    "Type": "Material",
+    "Name": "Dragon Scale",
+    "Description": "Harder than steel, hot to the touch.",
+    "Price": 1000,
+    "Rarity": "Legendary",
+    "Quantity": 1,
+    "MaxStack": 64
+  }
+]

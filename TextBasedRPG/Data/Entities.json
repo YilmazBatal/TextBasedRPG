@@ -1,0 +1,74 @@
+[
+  {
+    "ID": "E0001",
+    "Name": "Wild Slime",
+    "BaseHP": 25,
+    "BaseATK": 6,
+    "BaseDEF": 2,
+    "Level": 1,
+    "EntityType": "Enemy",
+    "GoldDrop": 5,
+    "LootTable": {
+      "M0001": 50,
+      "S0001": 5
+    }
+  },
+  {
+    "ID": "E0002",
+    "Name": "Forest Goblin",
+    "BaseHP": 55,
+    "BaseATK": 12,
+    "BaseDEF": 5,
+    "Level": 3,
+    "EntityType": "Enemy",
+    "GoldDrop": 15,
+    "LootTable": {
+      "M0002": 40,
+      "W0001": 10
+    }
+  },
+  {
+    "ID": "E0003",
+    "Name": "Skeleton Archer",
+    "BaseHP": 40,
+    "BaseATK": 18,
+    "BaseDEF": 3,
+    "Level": 4,
+    "EntityType": "Enemy",
+    "GoldDrop": 25,
+    "LootTable": {
+      "M0003": 30,
+      "W0003": 15
+    }
+  },
+  {
+    "ID": "B0001",
+    "Name": "Goblin King",
+    "BaseHP": 250,
+    "BaseATK": 35,
+    "BaseDEF": 15,
+    "Level": 10,
+    "EntityType": "Boss",
+    "GoldDrop": 150,
+    "LootTable": {
+      "W0004": 100,
+      "A0002": 50,
+      "M0004": 100
+    }
+  },
+  {
+    "ID": "B0002",
+    "Name": "Ancient Golem",
+    "BaseHP": 500,
+    "BaseATK": 20,
+    "BaseDEF": 40,
+    "Level": 15,
+    "EntityType": "Boss",
+    "GoldDrop": 300,
+    "LootTable": {
+      "M0003": 100,
+      "A0003": 40,
+      "M0005": 10
+    }
+  }
+]
