@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using TextBasedRPG.Entities;
 using TextBasedRPG.Heroes;
 
@@ -130,7 +131,8 @@ namespace TextBasedRPG.Managers
             // Convert to context so we can use it in the game
             var context = new GameContext();
 
-            context.Entities = LoadEntities();
+            LoadEntities(context);
+
 
             // Data Mapping
             if (loadedData != null)
@@ -142,7 +144,7 @@ namespace TextBasedRPG.Managers
                     "Warrior" => new Warrior(),
                     "Archer" => new Archer(),
                     "Mage" => new Mage(),
-                    _ => new Warrior(),
+                    _ => new Warrior(), // make it direct to the selection menu maybe?
                 }); // %100 can't be null
 
                 context.Player.Gold = loadedData.Player?.Gold ?? 100;
@@ -233,16 +235,52 @@ namespace TextBasedRPG.Managers
             return context;
         }
         
-        public List<Entity> LoadEntities()
+        public void LoadEntities(GameContext context)
         {
             if (!File.Exists(_entityPath))
             {
                 Console.WriteLine($"[ERROR] File not found! Path: {Path.GetFullPath(_entityPath)}");
-                return new List<Entity>();
+                context.Entities = new List<Entity>();
+                return;
             }
+
             string jsonString = File.ReadAllText(_entityPath);
-            List<Entity>? loadedData = JsonSerializer.Deserialize<List<Entity>>(jsonString);
-            return loadedData ?? new List<Entity>();
+            
+            List<MobData>? loadedData = JsonSerializer.Deserialize<List<MobData>>(jsonString);
+
+            if (loadedData != null)
+            {
+                context.Entities = new List<Entity>();
+                foreach (var data in loadedData)
+                {
+                    Entity mappedEntity;
+                    if (data.EntityType == "Boss")
+                        mappedEntity = new Boss();
+                    else
+                        mappedEntity = new Enemy();
+
+                    mappedEntity.ID = data.ID;
+                    mappedEntity.Name = data.Name;
+                    mappedEntity.BaseHP = data.BaseHP;
+                    mappedEntity.BaseATK = data.BaseATK;
+                    mappedEntity.BaseDEF = data.BaseDEF;
+                    mappedEntity.BaseSPD = data.BaseSPD;
+                    mappedEntity.Level = data.Level;
+                    mappedEntity.GoldDrop = data.GoldDrop;
+                    mappedEntity.LootTable = data.LootTable ?? new();
+                    if (Enum.TryParse<EntityType>(data.EntityType.ToString(), true, out var type))
+                    {
+                        mappedEntity.EntityType = type;
+                    }
+                    else
+                    {
+                        mappedEntity.EntityType = EntityType.Enemy; 
+                    }
+
+                    context.Entities?.Add(mappedEntity);
+                }
+            }
+            //return loadedData ?? new List<MobData>();
         }
         #endregion
     }
@@ -251,7 +289,7 @@ namespace TextBasedRPG.Managers
     {
         public Player? Player { get; set; }
         public bool IsAutoSaveOn { get; set; } = true;
-        public List<Entity>? EntityList { get; set; }
+        public List<MobData>? EntityList { get; set; }
     }
     public class Player
     {
@@ -293,13 +331,14 @@ namespace TextBasedRPG.Managers
         public int? InvestedDEX { get; set; }
         public int? InvestedAGI { get; set; }
     }
-    public class Entity
+    public class MobData
     {
-        public string ID = string.Empty;
-        public string Name = string.Empty;
+        public string ID { get; set; }
+        public string Name { get; set; }
         public int BaseHP { get; set; }
         public int BaseATK { get; set; }
         public int BaseDEF { get; set; }
+        public int BaseSPD { get; set; }
         public int Level { get; set; }
         public int Scaling { get; set; }
         public int EliteChance { get; set; }
