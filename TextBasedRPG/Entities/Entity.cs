@@ -6,7 +6,7 @@ namespace TextBasedRPG.Entities
     {
         public double Scaling = 1.3; 
         public int EliteChance = 5; // %
-        public int LevelInterval = 5;
+        public int LevelInterval = 3;
 
         // JSON datas
         public string ID = string.Empty;
@@ -14,31 +14,28 @@ namespace TextBasedRPG.Entities
         public int BaseHP;
         public int BaseATK;
         public int BaseDEF;
+        public int BaseSPD;
         public int Level;
         public Dictionary<string, int>? LootTable;  // ID, Chances%
         public int GoldDrop;
         public EntityType EntityType;
 
         // Runtime datas
-        public int MaxHP => (int)Math.Round((decimal)BaseHP + (decimal)(BaseHP * GeneratedLevel * 20 / 100 * (isElite ? Scaling : 1)));
-        public int CurrentHP { get; set; }
-        public int CurrentATK => (int)Math.Round((decimal)BaseATK + (decimal)(BaseATK * GeneratedLevel * 20/100 * (isElite ? Scaling : 1)));
-        public int CurrentDEF => (int)Math.Round((decimal) BaseDEF + (decimal) (BaseDEF * GeneratedLevel * 5/100 * (isElite? Scaling : 1)));
+        public int TotalHP => (int)Math.Round((decimal)BaseHP + (decimal)(BaseHP * GeneratedLevel * 20 / 100 * (isElite ? Scaling : 1)));
+        public int CurHP { get; set; }
+        public int TotalATK => (int)Math.Round((decimal)BaseATK + (decimal)(BaseATK * GeneratedLevel * 20/100 * (isElite ? Scaling : 1)));
+        public int TotalDEF => (int)Math.Round((decimal) BaseDEF + (decimal) (BaseDEF * GeneratedLevel * 5/100 * (isElite? Scaling : 1)));
+        public int CurrentSPD => (int)Math.Round((decimal) BaseSPD + (decimal) (BaseSPD + GeneratedLevel));
         public int GeneratedLevel { get; set; }
         public bool isElite { get; set; }
-        public bool IsAlive => CurrentHP > 0;
-        
-        public virtual void Initialize()
-        {
-            isElite = Random.Shared.Next(0, 100) < EliteChance;
-            GeneratedLevel = Math.Max(1, Random.Shared.Next(Level - LevelInterval, Level + LevelInterval)); // Seviye aralığını daralttım
-            CurrentHP = MaxHP;
-        }
+        public bool IsAlive => CurHP > 0;
+
+        public abstract void Initialize();
 
         public void TakeDamage(int amount)
         {
-            CurrentHP -= Math.Max(0, amount);
-            if (CurrentHP < 0) CurrentHP = 0;
+            CurHP -= Math.Max(0, amount);
+            if (CurHP < 0) CurHP = 0;
         }
     }
 }

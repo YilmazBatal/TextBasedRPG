@@ -31,6 +31,7 @@ namespace TextBasedRPG.Heroes
         public int TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (int)Math.Round(InvestedSTRPoints * 1.5);
         public int TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
         public int TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
+        public int TotalSPD => 30 + (int)Math.Round(InvestedAGIPoints * 1.5);
         public int CurHP { get; internal set; }
         public double CritRate => 5 + InvestedDEXPoints * 1.0 / 3.0; // %
         public double CritDamage => 150 + InvestedSTRPoints; // %
