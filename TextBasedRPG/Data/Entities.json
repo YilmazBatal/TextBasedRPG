@@ -5,12 +5,13 @@
     "BaseHP": 25,
     "BaseATK": 6,
     "BaseDEF": 2,
+    "BaseSPD": 5,
     "Level": 1,
     "EntityType": "Enemy",
     "GoldDrop": 5,
     "LootTable": {
       "M0001": 50,
-      "S0001": 5
+      "W0001": 5
     }
   },
   {
@@ -19,6 +20,7 @@
     "BaseHP": 55,
     "BaseATK": 12,
     "BaseDEF": 5,
+    "BaseSPD": 12,
     "Level": 3,
     "EntityType": "Enemy",
     "GoldDrop": 15,
@@ -33,6 +35,7 @@
     "BaseHP": 40,
     "BaseATK": 18,
     "BaseDEF": 3,
+    "BaseSPD": 20,
     "Level": 4,
     "EntityType": "Enemy",
     "GoldDrop": 25,
@@ -47,6 +50,7 @@
     "BaseHP": 250,
     "BaseATK": 35,
     "BaseDEF": 15,
+    "BaseSPD": 18,
     "Level": 10,
     "EntityType": "Boss",
     "GoldDrop": 150,
@@ -62,6 +66,7 @@
     "BaseHP": 500,
     "BaseATK": 20,
     "BaseDEF": 40,
+    "BaseSPD": 4,
     "Level": 15,
     "EntityType": "Boss",
     "GoldDrop": 300,
