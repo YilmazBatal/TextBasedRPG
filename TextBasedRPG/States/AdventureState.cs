@@ -6,8 +6,7 @@ public class AdventureState : IMenuState
     public GameState Update(GameContext context)
     {
         Console.Clear();
-        Console.WriteLine("You are at the Adventure.");
-        //CombatManager.StartCombat(context);
+        CombatManager.StartCombat(context);
         Console.ReadKey();
         return GameState.MainMenu;
     }
