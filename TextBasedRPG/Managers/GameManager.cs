@@ -249,17 +249,32 @@ namespace TextBasedRPG.Managers
             Console.WriteLine($"    / \\       Gold: {p?.Gold}");
             EquipmentCheck(context);
             Console.WriteLine("----------------------------------------------");
-            Console.WriteLine($"XP [{BarFiller(p.CurExp, p.ReqExp)}] {p?.CurExp.ToString()}/{p?.ReqExp.ToString()} - HP [{BarFiller(p.CurHP, p.TotalHP)}] {p?.CurHP.ToString()}/{p?.TotalHP.ToString()}");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write($"{BarFiller("XP", p.CurExp, p.ReqExp)}");
+            Console.ResetColor();
+            Console.Write($" - ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"{BarFiller("HP",p.CurHP, p.TotalHP)}");
+            Console.ResetColor();
             Console.WriteLine("==============================================");
         }
-        public static string BarFiller(int min, int max)
+        /// <summary>
+        /// Dynamic Bar with Custom Titling
+        /// </summary>
+        /// <param name="text">Name of the bar</param>
+        /// <param name="min">Min </param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static string BarFiller(string text, int cur, int max)
         {
-            string fill = "";
-            var ratio = (double)min / max;
+            string fill = text + " [";
+            var ratio = (double)cur / max;
             for (int i = 0; i < 10; i++)
             {
-                fill += (ratio > (i * 0.1)) ? "█" : "_";
+                fill += (ratio > (i * 0.1)) ? "█" : "░";
             }
+            fill += "] ";
+            fill += cur.ToString() + "/" + max.ToString();
             return fill;
         }
         
