@@ -1,7 +1,11 @@
 ﻿namespace TextBasedRPG.Interfaces
 {
-    public interface IDamageable
+    internal interface IDamageable
     {
+        int CurHP { get; }
+        int TotalHP { get; }
+        int TotalDEF { get; }
+
         void TakeDamage(int amount);
     }
 }
