@@ -34,7 +34,7 @@ namespace TextBasedRPG.Entities
 
         public void TakeDamage(int amount)
         {
-            CurHP -= Math.Max(0, amount);
+            CurHP -= Math.Max(1, amount);
             if (CurHP < 0) CurHP = 0;
         }
     }
