@@ -6,7 +6,7 @@
     "BaseATK": 6,
     "BaseDEF": 2,
     "BaseSPD": 5,
-    "Level": 1,
+    "Level": 10,
     "EntityType": "Enemy",
     "GoldDrop": 5,
     "LootTable": {

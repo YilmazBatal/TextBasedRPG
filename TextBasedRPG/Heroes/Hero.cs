@@ -28,8 +28,10 @@ namespace TextBasedRPG.Heroes
         // Currency
         public int Gold { get; internal set; } = 100;
         // Advanced stats             
-        public int TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (int)Math.Round(InvestedSTRPoints * 1.5);
-        public int TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
+        public int BonusATK { get; internal set; }
+        public int BonusDef { get; internal set; }
+        public int TotalATK => BaseATK + (EquippedWeapon?.WeaponATK ?? 0) + (int)Math.Round(InvestedSTRPoints * 1.5) + BonusATK;
+        public int TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5) + BonusDef;
         public int TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
         public int TotalSPD => 30 + (int)Math.Round(InvestedAGIPoints * 1.5);
         public int CurHP { get; internal set; }
@@ -58,7 +60,15 @@ namespace TextBasedRPG.Heroes
 
         public void TakeDamage(int amount)
         {
-            throw new NotImplementedException();
+            bool didEvade = Random.Shared.Next(0, 101) <= EvasionRate;
+            if (didEvade)
+                Console.WriteLine("User has dodged the attack.");
+            else
+            {
+                CurHP -= Math.Max(1, amount);
+                if (CurHP < 0) CurHP = 0;
+            }
+
         }
     }
 }

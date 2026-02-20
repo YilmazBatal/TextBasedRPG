@@ -104,9 +104,9 @@ namespace TextBasedRPG.Managers
             File.WriteAllText(_savePath, jsonString);
 
             Console.WriteLine("\n[SYSTEM] Game progress saved successfully.");
-            Thread.Sleep(750);
+            Thread.Sleep(500);
             Console.WriteLine( $"\n[SYSTEM] Auto Save is {(saveData.IsAutoSaveOn ? "ENABLED" : "DISABLED")}.");
-            Thread.Sleep(1250);
+            Thread.Sleep(500);
 
         }
         #endregion
@@ -117,9 +117,9 @@ namespace TextBasedRPG.Managers
             if (!File.Exists(_savePath))
             {
                 Console.WriteLine("[SYSTEM] No save file found.");
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 Console.WriteLine("[SYSTEM] Creating a new save file...");
-                Thread.Sleep(1500);
+                Thread.Sleep(500);
 
                 return new GameContext();
             }

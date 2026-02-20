@@ -37,6 +37,7 @@ namespace TextBasedRPG.States
             [S] Save Game       - Save Progress
             [Q] Quit
             """);
+            Console.Write("\nSelection : ");
             string? input = Console.ReadLine()?.ToUpper();
 
             if (input == "A")
