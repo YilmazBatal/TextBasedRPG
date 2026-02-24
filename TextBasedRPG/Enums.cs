@@ -8,6 +8,7 @@
     Training,
     Adventure,
     Dungeon,
+    Map,
     Exit
 }
 public enum WeaponType { Sword, Bow, Staff }
