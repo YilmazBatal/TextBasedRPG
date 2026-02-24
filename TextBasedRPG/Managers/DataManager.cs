@@ -2,6 +2,7 @@
 using System.Text.Json;
 using TextBasedRPG.Entities;
 using TextBasedRPG.Heroes;
+using TextBasedRPG.Locations;
 
 namespace TextBasedRPG.Managers
 {
@@ -9,6 +10,7 @@ namespace TextBasedRPG.Managers
     {
         private readonly string _savePath = "data.json";
         private readonly string _entityPath = "../../../Data/Entities.json";
+        private readonly string _locationPath = "../../../Data/Locations.json";
 
         #region Save
         public void SaveGame(GameContext context)
@@ -132,7 +134,7 @@ namespace TextBasedRPG.Managers
             var context = new GameContext();
 
             LoadEntities(context);
-
+            LoadLocations(context);
 
             // Data Mapping
             if (loadedData != null)
@@ -234,7 +236,7 @@ namespace TextBasedRPG.Managers
             Thread.Sleep(1000);
             return context;
         }
-        
+
         public void LoadEntities(GameContext context)
         {
             if (!File.Exists(_entityPath))
@@ -245,7 +247,7 @@ namespace TextBasedRPG.Managers
             }
 
             string jsonString = File.ReadAllText(_entityPath);
-            
+
             List<MobData>? loadedData = JsonSerializer.Deserialize<List<MobData>>(jsonString);
 
             if (loadedData != null)
@@ -265,8 +267,7 @@ namespace TextBasedRPG.Managers
                     mappedEntity.BaseATK = data.BaseATK;
                     mappedEntity.BaseDEF = data.BaseDEF;
                     mappedEntity.BaseSPD = data.BaseSPD;
-                    mappedEntity.Level = data.Level;
-                    mappedEntity.GoldDrop = data.GoldDrop;
+                    mappedEntity.GoldMultiplier = data.GoldMultiplier;
                     mappedEntity.LootTable = data.LootTable ?? new();
                     if (Enum.TryParse<EntityType>(data.EntityType.ToString(), true, out var type))
                     {
@@ -274,13 +275,45 @@ namespace TextBasedRPG.Managers
                     }
                     else
                     {
-                        mappedEntity.EntityType = EntityType.Enemy; 
+                        mappedEntity.EntityType = EntityType.Enemy;
                     }
 
                     context.Entities?.Add(mappedEntity);
                 }
             }
             //return loadedData ?? new List<MobData>();
+        }
+        public void LoadLocations(GameContext context)
+        {
+            if (!File.Exists(_locationPath))
+            {
+                Console.WriteLine($"[ERROR] File not found! Path: {Path.GetFullPath(_locationPath)}");
+                context.Locations = new List<Location>();
+                return;
+            }
+
+            string jsonString = File.ReadAllText(_locationPath);
+
+            List<LocationData>? loadedData = JsonSerializer.Deserialize<List<LocationData>>(jsonString);
+
+            if (loadedData != null)
+            {
+                context.Locations = new List<Location>();
+                foreach (var location in loadedData)    
+                {
+                    Location mappedLocation = new Location(
+                        location.ID,
+                        location.Name,
+                        location.Description,
+                        location.AdventureTexts,
+                        location.Entities
+                    );
+                    context.Locations?.Add(mappedLocation);
+                }
+            }
+            Console.WriteLine($"Location Count : {context.Locations.Count}");
+            Console.WriteLine($"Location 2 Monster Count : {context.Locations[2].Entities.Count}");
+            Console.WriteLine($"Location 1 Text 3 : {context.Locations[0].AdventureTexts[3]}");
         }
         #endregion
     }
@@ -290,6 +323,7 @@ namespace TextBasedRPG.Managers
         public Player? Player { get; set; }
         public bool IsAutoSaveOn { get; set; } = true;
         public List<MobData>? EntityList { get; set; }
+        public List<Location>? Locations { get; set; }
     }
     public class Player
     {
@@ -343,8 +377,16 @@ namespace TextBasedRPG.Managers
         public int Scaling { get; set; }
         public int EliteChance { get; set; }
         public Dictionary<string, int> LootTable { get; set; } = new (); // ID, Chances%
-        public int GoldDrop { get; set; }
+        public double GoldMultiplier { get; set; }
         public string EntityType = string.Empty;
+    }
+    public class LocationData
+    {
+        public required string ID { get; init; }
+        public required string Name { get; init; }
+        public string? Description { get; init; }
+        public List<string>? AdventureTexts { get; init; }
+        public List<string>? Entities { get; init; }
     }
     #endregion
 }
