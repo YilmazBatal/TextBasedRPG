@@ -99,9 +99,16 @@
     "LevelCap" : 60,
     "Entities" : ["E0004", "E0005", "B0003"],
     "AdventureTexts": [
-        "Text 1",
-        "Text 2",
-        "Text 3"
+        "The crunching of leaves under your feet sounds like hundreds of tiny bones. Comforting.",
+        "You saw a shadow move behind a tree. When you looked, the tree was gone too. Wait, what?",
+        "An orange leaf fell on your shoulder. It whispered: 'You're next.' You brushed it off nervously.",
+        "The sap in Amber Woods smells like honey, but it's sticky enough to hold a dragon. You move carefully.",
+        "You found a hollow log filled with ancient acorns. They seem to be vibrating.",
+        "A pair of glowing eyes stared from the thicket. You stared back until they got uncomfortable and left.",
+        "The fog here is so thick you accidentally tried to lean on it. You fell. The fog laughed.",
+        "You found a rusted helmet hanging on a branch. A squirrel is using it as a high-end apartment.",
+        "The trees here have very long 'fingers'. One of them just tried to fix your hair.",
+        "You realized the 'wind' is actually the forest breathing. It has terrible morning breath."
     ]
   }
 ]
