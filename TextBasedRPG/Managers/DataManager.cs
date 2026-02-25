@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using TextBasedRPG.Entities;
 using TextBasedRPG.Heroes;
 using TextBasedRPG.Locations;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.Managers
 {
@@ -26,6 +26,7 @@ namespace TextBasedRPG.Managers
                 {
                     Class = context.Player.ClassName,
                     Level = context.Player.Level,
+                    ActiveLocation = context.Player.ActiveLocation,
                     Experience = context.Player.CurExp,
                     CurHP = context.Player.CurHP,
                     Gold = context.Player.Gold,
@@ -105,10 +106,10 @@ namespace TextBasedRPG.Managers
             // Update the file
             File.WriteAllText(_savePath, jsonString);
 
-            Console.WriteLine("\n[SYSTEM] Game progress saved successfully.");
-            Thread.Sleep(500);
-            Console.WriteLine( $"\n[SYSTEM] Auto Save is {(saveData.IsAutoSaveOn ? "ENABLED" : "DISABLED")}.");
-            Thread.Sleep(500);
+            MenuUI.ColoredMsg(ConsoleColor.Green, "\n[SYSTEM] Game progress saved successfully.");
+            Thread.Sleep(400);
+            MenuUI.ColoredMsg(ConsoleColor.Yellow, $"\n[SYSTEM] Auto Save is {(saveData.IsAutoSaveOn ? "ENABLED" : "DISABLED")}.");
+            Thread.Sleep(400);
 
         }
         #endregion
@@ -118,10 +119,10 @@ namespace TextBasedRPG.Managers
         {
             if (!File.Exists(_savePath))
             {
-                Console.WriteLine("[SYSTEM] No save file found.");
-                Thread.Sleep(500);
-                Console.WriteLine("[SYSTEM] Creating a new save file...");
-                Thread.Sleep(500);
+                MenuUI.ColoredMsg(ConsoleColor.Red, "[SYSTEM] No save file found.");
+                Thread.Sleep(400);
+                MenuUI.ColoredMsg(ConsoleColor.Yellow, "[SYSTEM] Creating a new save file...");
+                Thread.Sleep(400);
 
                 return new GameContext();
             }
@@ -153,6 +154,7 @@ namespace TextBasedRPG.Managers
                 context.Player.Level = loadedData.Player?.Level ?? 1;
                 context.Player.CurExp = loadedData.Player?.Experience ?? 0;
                 context.Player.CurHP = loadedData.Player?.CurHP ?? 0;
+                context.Player.ActiveLocation = loadedData.Player?.ActiveLocation ?? "L001";
 
                 // load equipped items
                 context.Player.EquippedWeapon = loadedData.Player?.EquippedWeapon != null ? new Weapon
@@ -232,7 +234,7 @@ namespace TextBasedRPG.Managers
                 context.Player.InvestedAGIPoints = loadedData.Player?.Stats?.InvestedAGI ?? 0;
             }
 
-            Console.WriteLine("\n[SYSTEM] Game loaded successfully.");
+            MenuUI.ColoredMsg(ConsoleColor.Green, "\n[SYSTEM] Game loaded successfully.");
             Thread.Sleep(1000);
             return context;
         }
@@ -241,7 +243,7 @@ namespace TextBasedRPG.Managers
         {
             if (!File.Exists(_entityPath))
             {
-                Console.WriteLine($"[ERROR] File not found! Path: {Path.GetFullPath(_entityPath)}");
+                MenuUI.ColoredMsg(ConsoleColor.Red, $"[ERROR] File not found! Path: {Path.GetFullPath(_entityPath)}");
                 context.Entities = new List<Entity>();
                 return;
             }
@@ -287,7 +289,7 @@ namespace TextBasedRPG.Managers
         {
             if (!File.Exists(_locationPath))
             {
-                Console.WriteLine($"[ERROR] File not found! Path: {Path.GetFullPath(_locationPath)}");
+                MenuUI.ColoredMsg(ConsoleColor.Red, $"[ERROR] File not found! Path: {Path.GetFullPath(_locationPath)}");
                 context.Locations = new List<Location>();
                 return;
             }
@@ -311,6 +313,8 @@ namespace TextBasedRPG.Managers
                     );
                     context.Locations?.Add(mappedLocation);
                 }
+
+                LocationManager.LocationMapping(context);
             }
         }
         #endregion
@@ -330,6 +334,7 @@ namespace TextBasedRPG.Managers
         public int? Experience { get; set; }
         public int? Gold { get; set; }
         public int? CurHP { get; set; }
+        public string? ActiveLocation { get; set; }
         public ItemData? EquippedWeapon { get; set; }
         public ItemData? EquippedArmor { get; set; }
         public List<ItemData>? Inventory { get; set; }
