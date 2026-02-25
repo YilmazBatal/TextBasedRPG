@@ -17,7 +17,7 @@ namespace TextBasedRPG.Entities
         public int BaseSPD;
         public int Level;
         public Dictionary<string, int>? LootTable;  // ID, Chances%
-        public int GoldDrop;
+        public double GoldMultiplier;
         public EntityType EntityType;
 
         // Runtime datas
@@ -30,7 +30,7 @@ namespace TextBasedRPG.Entities
         public bool isElite { get; set; }
         public bool IsAlive => CurHP > 0;
 
-        public abstract void Initialize();
+        public abstract void Initialize(int playerLevel, int levelCap);
 
         public void TakeDamage(int amount)
         {

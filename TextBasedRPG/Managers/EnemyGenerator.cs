@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Entities;
+﻿using System.Net.Mime;
+using TextBasedRPG.Entities;
 
 namespace TextBasedRPG.Managers
 {
@@ -27,10 +28,10 @@ namespace TextBasedRPG.Managers
             newEntity.Scaling = template.Scaling;
             newEntity.EliteChance = template.EliteChance;
             newEntity.LootTable = template.LootTable;
-            newEntity.GoldDrop = template.GoldDrop;
+            newEntity.GoldMultiplier = template.GoldMultiplier;
             newEntity.EntityType = template.EntityType;
-
-            newEntity.Initialize();
+                                                                                            // make this dynamic
+            newEntity.Initialize(playerLevel : context.Player.Level, levelCap : context.Locations[0].LevelCap);
 
             newEntity.Level = newEntity.GeneratedLevel;
 

@@ -304,16 +304,14 @@ namespace TextBasedRPG.Managers
                     Location mappedLocation = new Location(
                         location.ID,
                         location.Name,
-                        location.Description,
-                        location.AdventureTexts,
-                        location.Entities
+                        description : location.Description,
+                        levelCap : location.LevelCap,
+                        texts : location.AdventureTexts,
+                        entities : location.Entities
                     );
                     context.Locations?.Add(mappedLocation);
                 }
             }
-            Console.WriteLine($"Location Count : {context.Locations.Count}");
-            Console.WriteLine($"Location 2 Monster Count : {context.Locations[2].Entities.Count}");
-            Console.WriteLine($"Location 1 Text 3 : {context.Locations[0].AdventureTexts[3]}");
         }
         #endregion
     }
@@ -385,6 +383,7 @@ namespace TextBasedRPG.Managers
         public required string ID { get; init; }
         public required string Name { get; init; }
         public string? Description { get; init; }
+        public int LevelCap { get; init; }
         public List<string>? AdventureTexts { get; init; }
         public List<string>? Entities { get; init; }
     }
