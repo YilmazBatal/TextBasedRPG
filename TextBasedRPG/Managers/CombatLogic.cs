@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Entities;
+﻿using System.Diagnostics;
+using TextBasedRPG.Entities;
 using TextBasedRPG.Events;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.UI;
@@ -134,7 +135,29 @@ namespace TextBasedRPG.Managers
         }
         public static bool CombatRunAway(GameContext context, Entity entity, List<string> log)
         {
-            log.Add("P:User tried to run away");
+            int enemySpeed = entity.CurrentSPD;
+            int playerSpeed = context.Player.TotalSPD;
+            int baseLuck = 50; // %
+            int luckMultiplier = 2;
+            int chance = baseLuck + (playerSpeed - enemySpeed) * luckMultiplier;
+            chance = Math.Clamp(chance, 0, 100);
+
+            int roll = Random.Shared.Next(0, 100);
+            bool success = roll < chance;
+
+            if (success)
+            {
+                log.Add("P:User ran away.");
+                MenuUI.ColoredMsg(ConsoleColor.Yellow, "You ran away successfuly!");
+                Console.WriteLine("\nPress Any Key...");
+                Console.ReadKey();
+                CombatManager.isCombatActive = false;
+            }
+            else
+            {
+                log.Add("P:User tried to run away but FAILED!");
+                MenuUI.ColoredMsg(ConsoleColor.Yellow, "You couldn't run away!");
+            }
             return true;
         }
         #endregion

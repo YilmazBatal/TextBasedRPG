@@ -5,8 +5,10 @@ using TextBasedRPG.UI;
 
 namespace TextBasedRPG.Managers
 {
-    internal class CombatManager
+    internal static class CombatManager
     {
+        public static bool isCombatActive = true;
+
         public static void StartCombat(GameContext context)
         {
             Combat(context);
@@ -20,8 +22,7 @@ namespace TextBasedRPG.Managers
             // Who is faster?
             bool isPlayerTurn = context.Player?.TotalSPD >= enemy.CurrentSPD;
             bool isPlayerStarted = isPlayerTurn;
-            bool isCombatActive = true;
-            
+
             while (isCombatActive)
             {
                 CombatUI.RefreshUI(context, enemy, log);
