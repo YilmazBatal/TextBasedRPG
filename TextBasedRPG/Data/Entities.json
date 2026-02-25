@@ -1,17 +1,16 @@
 [
   {
     "ID": "E0001",
-    "Name": "Wild Slime",
+    "Name": "Forest Slime",
     "BaseHP": 25,
-    "BaseATK": 6,
+    "BaseATK": 4,
     "BaseDEF": 2,
-    "BaseSPD": 5,
-    "Level": 10,
+    "BaseSPD": 3,
     "EntityType": "Enemy",
-    "GoldDrop": 5,
+    "GoldMultiplier": 1.0,
     "LootTable": {
-      "M0001": 50,
-      "W0001": 5
+      "M0001": 40, 
+      "I0012": 10
     }
   },
   {
@@ -21,9 +20,8 @@
     "BaseATK": 12,
     "BaseDEF": 5,
     "BaseSPD": 12,
-    "Level": 3,
     "EntityType": "Enemy",
-    "GoldDrop": 15,
+    "GoldMultiplier": 1.5,
     "LootTable": {
       "M0002": 40,
       "W0001": 10
@@ -36,9 +34,8 @@
     "BaseATK": 18,
     "BaseDEF": 3,
     "BaseSPD": 20,
-    "Level": 4,
     "EntityType": "Enemy",
-    "GoldDrop": 25,
+    "GoldMultiplier": 25,
     "LootTable": {
       "M0003": 30,
       "W0003": 15
@@ -51,9 +48,8 @@
     "BaseATK": 35,
     "BaseDEF": 15,
     "BaseSPD": 18,
-    "Level": 10,
     "EntityType": "Boss",
-    "GoldDrop": 150,
+    "GoldMultiplier": 5,
     "LootTable": {
       "W0004": 100,
       "A0002": 50,
@@ -67,9 +63,8 @@
     "BaseATK": 20,
     "BaseDEF": 40,
     "BaseSPD": 4,
-    "Level": 15,
     "EntityType": "Boss",
-    "GoldDrop": 300,
+    "GoldMultiplier": 5,
     "LootTable": {
       "M0003": 100,
       "A0003": 40,

@@ -3,6 +3,7 @@
     "ID": "L001",
     "Name": "The Awakening Wilds",
     "Description" : "A soft breeze carries the scent of blooming wildflowers. It is a place of beginnings, yet the distant rustling suggests you are not alone.",
+    "LevelCap" : 20,
     "Entities" : ["E0001", "E0002", "B0001"],
     "AdventureTexts": [
         "You found a suspicious looking rock. It looked back. You decided to walk away slowly.",
@@ -50,6 +51,7 @@
     "ID": "L002",
     "Name": "Whistling Crags",
     "Description": "The vegetation is sparse here, replaced by cold granite and ancient dust. Every step rings out, announcing your presence to the heights.",
+    "LevelCap" : 40,
     "Entities" : ["E0002", "E0003", "B0002"],
     "AdventureTexts": [
       "The wind here doesn't just whistle; it sounds like a flute solo from a very confused bard.",
@@ -94,6 +96,7 @@
     "ID": "L003",
     "Name": "Amber Woods",
     "Description": "The shadows are longer and darker here. As the orange leaves crunch under your boots, you feel the weight of eyes watching from the thicket.",
+    "LevelCap" : 60,
     "Entities" : ["E0004", "E0005", "B0003"],
     "AdventureTexts": [
         "Text 1",
