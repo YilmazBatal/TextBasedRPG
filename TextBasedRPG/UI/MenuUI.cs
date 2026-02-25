@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Managers;
+﻿using System.Drawing;
+using TextBasedRPG.Managers;
 
 namespace TextBasedRPG.UI
 {
@@ -238,17 +239,39 @@ namespace TextBasedRPG.UI
                 default: Console.ResetColor(); break;
             }
         }
+        public static void ColoredMsg(ConsoleColor color, string text)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        public static void MenuOption(string option, string text, string description)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"[{option}] ");
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write($"{text,-15} ");
+            
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("- ");
+            
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(description);
+            
+            Console.ResetColor();
+        }
         public static void HeroPreview(GameContext context)
         {
             var p = context.Player;
-            Console.WriteLine("--- Hit F11 for the best experience | ESC to Leave full screen mode ---");
-            Console.WriteLine("==============================================");
-            Console.WriteLine($" [ AVATAR ]   PLAYER STATUS      ");
-            Console.WriteLine($"     O        Class: {p?.ClassName}");
+            ColoredMsg(ConsoleColor.DarkGray, "--- Hit F11 for the best experience | ESC to Leave full screen mode ---");
+            ColoredMsg(ConsoleColor.Cyan , "════════════════ PLAYER INFO ════════════════");
+            Console.WriteLine($" [ AVATAR ]   Class: {p?.ClassName}      ");
+            Console.WriteLine($"     O        Location: {LocationManager.locations[p.ActiveLocation]} - {p.ActiveLocation.Substring(1)}");
             Console.WriteLine($"    /|\\       Level: {p?.Level}");
             Console.WriteLine($"    / \\       Gold: {p?.Gold}");
-            EquipmentCheck(context);
-            Console.WriteLine("----------------------------------------------");
+            #region Bars
+            Console.WriteLine("──────────────────────────────────────────────────────────");
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.Write($"{BarFiller("XP", p.CurExp, p.ReqExp)}");
             Console.ResetColor();
@@ -256,7 +279,10 @@ namespace TextBasedRPG.UI
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{BarFiller("HP", p.CurHP, p.TotalHP)}");
             Console.ResetColor();
-            Console.WriteLine("==============================================");
+            Console.WriteLine("──────────────────────────────────────────────────────────");
+            #endregion
+            EquipmentCheck(context);
+            Console.WriteLine();       
         }
         
         /// <summary> Visualize specified Data with 10 Bars </summary>

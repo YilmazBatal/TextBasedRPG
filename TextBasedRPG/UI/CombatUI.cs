@@ -15,13 +15,17 @@ namespace TextBasedRPG.UI
             |  /|\  DEF: {p?.TotalDEF,-9}|         | /|\  DEF: {enemy.TotalDEF,-9}|
             |  / \  LVL: {p?.Level,-9}|         | / \  LVL: {enemy.Level,-9}|   
             -----------------------         -----------------------
+            -----------------------  BONUS  -----------------------
+            | Attack Bonus: {p?.BonusATK,-9} 
+            | Defense Bonus: {p?.BonusDef,-9}
+            -----------------------         -----------------------
             """);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"|{UIHelper.BarFiller("HP", p.CurHP, p.TotalHP)}");
-            Console.WriteLine($"        {UIHelper.BarFiller("HP", enemy.CurHP, enemy.TotalHP)}");
+            Console.Write($"|{MenuUI.BarFiller("HP", p.CurHP, p.TotalHP)}");
+            Console.WriteLine($"        {MenuUI.BarFiller("HP", enemy.CurHP, enemy.TotalHP)}");
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine($"|{UIHelper.BarFiller("XP", p.CurExp, p.ReqExp)}");
+            Console.WriteLine($"|{MenuUI.BarFiller("XP", p.CurExp, p.ReqExp)}");
             Console.ResetColor();
         }
         public static void ShowLogs(List<string> log)
@@ -51,6 +55,7 @@ namespace TextBasedRPG.UI
         public static void RefreshUI(GameContext context, Entity enemy, List<string> log)
         {
             Console.Clear();
+            Console.WriteLine("\x1b[3J"); // 3 means everything , J means clear, this is to clear the scrollback buffer
             CombatHeader(context, enemy);
             ShowLogs(log);
         }
