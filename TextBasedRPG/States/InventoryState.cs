@@ -1,5 +1,6 @@
 ﻿using TextBasedRPG.Interfaces;
 using TextBasedRPG.Managers;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.States
 {
@@ -8,7 +9,7 @@ namespace TextBasedRPG.States
         public GameState Update(GameContext context)
         {
             Console.Clear();
-            UIHelper.BackpackPagination(context);
+            MenuUI.BackpackPagination(context);
             return GameState.MainMenu;
         }
 
