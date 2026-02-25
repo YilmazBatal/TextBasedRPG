@@ -3,11 +3,12 @@ using TextBasedRPG.Managers;
 
 public class AdventureState : IMenuState
 {
-    const int monsterEncounterChance = 70;
-    const int itemFindingChance = 85;
-    const int miniEventChance = 95;
-    const int chestChance = 100;
-    const int merchantEncounterChance = 0; // in the future
+    const int adventureTextChance = 25;         // 25
+    const int monsterEncounterChance = 80;      // 55
+    const int itemFindingChance = 85;           // 5
+    const int miniEventChance = 95;             // 10
+    const int chestChance = 100;                 // 5
+    //const int merchantEncounterChance = 0; // in the future
     public bool isAdventuring = true;
     public GameState Update(GameContext context)
     {
@@ -18,6 +19,11 @@ public class AdventureState : IMenuState
             Traveling();
             switch (AdventureGenerator())
             {
+                case <= adventureTextChance:
+                    var currentLocationasObject = context.Locations?.FirstOrDefault(r => r.ID == context.Player?.ActiveLocation);
+                    string randomText = currentLocationasObject.AdventureTexts[Random.Shared.Next(0, currentLocationasObject.AdventureTexts.Count + 1)];
+                    BruteForceTypeWriter(randomText);
+                    break;
                 case <= monsterEncounterChance:
                     CombatManager.StartCombat(context);
                     break;
@@ -27,8 +33,11 @@ public class AdventureState : IMenuState
                 case <= miniEventChance:
                     GenerateEvent();
                     break;
+                case <= chestChance:
+                    GenerateEvent();
+                    break;
                 default:
-                    GenerateChest();
+                    Console.WriteLine("There was a problem.");
                     break;
             }
             Console.WriteLine("\n[1] Keep Adventuring | [Any Other Key] Go Back to Town");
@@ -41,18 +50,15 @@ public class AdventureState : IMenuState
 
     private static void Traveling()
     {
-        Console.Clear();
-        Console.WriteLine("Traveling");
-        Thread.Sleep(400);
-        Console.Clear();
-        Console.WriteLine("Traveling.");
-        Thread.Sleep(400);
-        Console.Clear();
-        Console.WriteLine("Traveling..");
-        Thread.Sleep(400);
-        Console.Clear();
-        Console.WriteLine("Traveling...");
-        Thread.Sleep(400);
+        string travelText = "Traveling";
+        for (int i = 0; i < Random.Shared.Next(2, 5); i++)
+        {
+            Console.Clear();
+            travelText += ".";
+            Console.WriteLine(travelText);
+            Thread.Sleep(400);
+        }
+        travelText = "Traveling";
         Console.Clear();
     }
 
@@ -74,6 +80,43 @@ public class AdventureState : IMenuState
 
     public int AdventureGenerator()
     {
-        return Random.Shared.Next(0, 100);
+        return Random.Shared.Next(0, 101);
+    }
+
+    public static void TypeWriter(string text, int speed = 50)
+    {
+        foreach (char c in text)
+        {
+            Console.Write(c);
+            Thread.Sleep(speed);
+        }
+        Console.WriteLine();
+    }
+    public static void BruteForceTypeWriter(string text, int delay = 10)
+    {
+        string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
+        string currentDisplay = "";
+        foreach (char c in text)
+        {
+            if (c == ' ')
+            {
+                currentDisplay += ' ';
+                Console.Write(" ");
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++) 
+                {
+                    char randomChar = chars[Random.Shared.Next(chars.Length)];
+                    Console.Write(randomChar);
+                    Thread.Sleep(delay);
+                    Console.Write("\b");
+                }
+
+                currentDisplay += c;
+                Console.Write(c);
+            }
+        }
+        Console.WriteLine();
     }
 }
