@@ -1,5 +1,6 @@
 ﻿using TextBasedRPG.Interfaces;
 using TextBasedRPG.Managers;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.States
 {
@@ -24,20 +25,20 @@ namespace TextBasedRPG.States
             }
 
 
-            UIHelper.HeroPreview(context);
-            Console.WriteLine("--- MAIN MENU ---");
-            Console.WriteLine($"""
-            [0] Detailed Stats  - Detailed Player Information
-            [1] Backpack        - Browse In Your Inventory
-            [2] BlackSmith      - Upgrade Equipments
-            [3] Training        - Improve Yourself
-            [4] Adventure       - Fight Monsters
-            [5] Region Boss     - Challange Boss
-            [A] Auto Save       - Toggle Auto Save (Currently {(context.IsAutoSaveOn ? "ON" : "OFF")})
-            [S] Save Game       - Save Progress
-            [Q] Quit
-            """);
-            Console.Write("\nSelection : ");
+            MenuUI.HeroPreview(context);
+            Console.WriteLine("════════════════ MAIN MENU ════════════════");
+            MenuUI.MenuOption("0", "Detailed Stats", "Detailed Player Information.");
+            MenuUI.MenuOption("1", "Backpack", "Browse In Your Inventory.");
+            MenuUI.MenuOption("2", "BlackSmith", "Upgrade Equipments.");
+            MenuUI.MenuOption("3", "Training", "Improve Yourself.");
+            MenuUI.MenuOption("4", "Adventure", "Fight Monsters and Find Loots.");
+            MenuUI.MenuOption("5", "Region Boss", "Challange The Boss.");
+            MenuUI.MenuOption("6", "Map", "View Map and Travel.");
+            MenuUI.MenuOption("A", "Auto Save", $"Toggle Auto Save. Currently : { (context.IsAutoSaveOn ? "ON" : "OFF")}.");
+            MenuUI.MenuOption("S", "Save Game", "Save Progress.");
+            MenuUI.MenuOption("Q", "Quit", "Quit The Game.");
+            
+            Console.Write("\nSelection » ");
             string? input = Console.ReadLine()?.ToUpper();
 
             if (input == "A")
@@ -45,12 +46,12 @@ namespace TextBasedRPG.States
                 if (context.IsAutoSaveOn)
                 {
                     context.IsAutoSaveOn = false;
-                    Console.WriteLine("[SYSTEM] Auto Save is now OFF");
+                    MenuUI.ColoredMsg(ConsoleColor.Red, "[SYSTEM] Auto Save is now OFF");
                 }
                 else
                 {
                     context.IsAutoSaveOn = true;
-                    Console.WriteLine("[SYSTEM] Auto Save is now ON");
+                    MenuUI.ColoredMsg(ConsoleColor.Green, "[SYSTEM] Auto Save is now ON");
                 }
                 Thread.Sleep(1000);
                 return GameState.MainMenu;
@@ -70,6 +71,7 @@ namespace TextBasedRPG.States
                 "3" => GameState.Training,
                 "4" => GameState.Adventure,
                 "5" => GameState.Dungeon,
+                "6" => GameState.Map,
                 "Q" => GameState.Exit,
                 _ => GameState.MainMenu
             };

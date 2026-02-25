@@ -1,5 +1,6 @@
 ﻿using TextBasedRPG.Interfaces;
 using TextBasedRPG.Managers;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.States
 {
@@ -21,7 +22,7 @@ namespace TextBasedRPG.States
             Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage:F1}");
             Console.WriteLine($"{"Evasion:",-25} %{p?.EvasionRate:F1}");
             Console.WriteLine("------------------- Equipment Data ------------------------");
-            UIHelper.EquipmentCheck(context);
+            MenuUI.EquipmentCheck(context);
             Console.WriteLine("------------------- Training Data -------------------------");
             Console.WriteLine($"Unused Training Points: {p?.UnusedStatPoints}");
             Console.WriteLine($"Total Points Invested: {p?.InvestedSTRPoints + p?.InvestedVITPoints + p?.InvestedDEXPoints + p?.InvestedAGIPoints}");
