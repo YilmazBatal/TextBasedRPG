@@ -1,17 +1,106 @@
-﻿using System.Drawing;
+﻿using TextBasedRPG.Locations;
 using TextBasedRPG.Managers;
 
 namespace TextBasedRPG.UI
 {
     public static class MenuUI
     {
+        private const int ITEMS_PER_PAGE = 9;
+        // will do dynamic text in the future
+        private static void MapTitle()
+        {
+            #region Title
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("╔══════════════════════════════════════════════════════╗");
+            Console.Write("║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("                          MAP                         ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("║");
+            Console.WriteLine("╚══════════════════════════════════════════════════════╝");
+            Console.ResetColor();
+            #endregion
+        }
+        private static void ActiveLocationData(GameContext context)
+        {
+            int index = LocationManager.GetLocationIndex(context);
+
+            Console.WriteLine();
+            Console.Write($"Currently in: ");
+            ColoredMsg(ConsoleColor.White, text: context.Locations[index].Name);
+            Console.WriteLine($"Description: {context.Locations[index].Description}");
+            Console.Write($"Monsters Level Cap: ");
+            ColoredMsg(ConsoleColor.Red, context.Locations[index].LevelCap.ToString());
+            Console.WriteLine();
+        }
+        public static void MapPagination(GameContext context)
+        {
+            var locations = context.Locations;
+            if (locations == null) return;
+
+            int pageCount = (int)Math.Ceiling((double)locations.Count / ITEMS_PER_PAGE);
+            int currentPage = 0;
+            bool inMenu = true;
+
+            while (inMenu)
+            {
+                Console.Clear();
+                MapTitle();
+                ActiveLocationData(context);
+                Console.WriteLine($"══════════════════ LOCATIONS PAGE {currentPage + 1} / {pageCount} ══════════════════");
+                Console.WriteLine();
+                Console.WriteLine($"    {"Location No",-12} {"Location Name",-25} {"Unlocked",-10}");
+                Console.WriteLine("──────────────────────────────────────────────────────────");
+
+                for (int j = 0; j < ITEMS_PER_PAGE; j++)
+                {
+                    int currentIndex = j + (currentPage * ITEMS_PER_PAGE);
+
+                    if (currentIndex >= locations.Count)
+                        break;
+
+                    var item = locations[currentIndex];
+                    Console.Write($"[{j + 1}] {item.ID,-12} {item.Name.ToString(),-25} {"no",-10} ");
+                    Console.WriteLine();
+                }
+                Console.WriteLine("──────────────────────────────────────────────────────────");
+                Console.WriteLine($"[P]revious | [N]ext | [B]ack");
+                Console.WriteLine("══════════════════════════════════════════════════════════");
+                Console.Write("Selection: ");
+
+                string input = Console.ReadLine()?.ToUpper() ?? "";
+
+                if (input == "N")
+                {
+                    if (currentPage < pageCount - 1) currentPage++;
+                }
+                else if (input == "P")
+                {
+                    if (currentPage > 0) currentPage--;
+                }
+                else if (input == "B") inMenu = false;
+                else // selected number
+                {
+                    //if (int.TryParse(input, out int selection) && selection >= 1 && selection <= 9)
+                    //{
+                    //    int realIndex = (currentPage * itemsPerPage) + (selection - 1);
+
+                    //    if (realIndex < locations.Count)
+                    //    {
+                    //        var selectedItem = locations[realIndex];
+
+                    //        ShowItemDetails(locations, selectedItem, isAtShop: false, context);
+                    //    }
+                    //}
+                }
+            }
+        }
         public static void BackpackPagination(GameContext context)
         {
             var inventory = context.Player?.Inventory;
             if (inventory == null) return;
 
-            int itemsPerPage = 9;
-            int pageCount = (int)Math.Ceiling((double)inventory.Count / itemsPerPage);
+            int pageCount = (int)Math.Ceiling((double)inventory.Count / ITEMS_PER_PAGE);
             int currentPage = 0;
             bool inMenu = true;
 
@@ -23,9 +112,9 @@ namespace TextBasedRPG.UI
                 Console.WriteLine($"    {"Item Name",-20} {"Category",-10} {"Rarity",10}");
                 Console.WriteLine("---------------------------------------------------------");
 
-                for (int j = 0; j < itemsPerPage; j++)
+                for (int j = 0; j < ITEMS_PER_PAGE; j++)
                 {
-                    int currentIndex = j + (currentPage * itemsPerPage);
+                    int currentIndex = j + (currentPage * ITEMS_PER_PAGE);
 
                     if (currentIndex >= inventory.Count)
                         break;
@@ -83,7 +172,7 @@ namespace TextBasedRPG.UI
                 {
                     if (int.TryParse(input, out int selection) && selection >= 1 && selection <= 9)
                     {
-                        int realIndex = (currentPage * itemsPerPage) + (selection - 1);
+                        int realIndex = (currentPage * ITEMS_PER_PAGE) + (selection - 1);
 
                         if (realIndex < inventory.Count)
                         {
@@ -227,7 +316,7 @@ namespace TextBasedRPG.UI
                 }
             }
         }
-        private static void SetRarityColor(string rarity)
+        public static void SetRarityColor(string rarity)
         {
             switch (rarity.ToLower())
             {
@@ -261,30 +350,6 @@ namespace TextBasedRPG.UI
             
             Console.ResetColor();
         }
-        public static void HeroPreview(GameContext context)
-        {
-            var p = context.Player;
-            ColoredMsg(ConsoleColor.DarkGray, "--- Hit F11 for the best experience | ESC to Leave full screen mode ---");
-            ColoredMsg(ConsoleColor.Cyan , "════════════════ PLAYER INFO ════════════════");
-            Console.WriteLine($" [ AVATAR ]   Class: {p?.ClassName}      ");
-            Console.WriteLine($"     O        Location: {LocationManager.locations[p.ActiveLocation]} - {p.ActiveLocation.Substring(1)}");
-            Console.WriteLine($"    /|\\       Level: {p?.Level}");
-            Console.WriteLine($"    / \\       Gold: {p?.Gold}");
-            #region Bars
-            Console.WriteLine("──────────────────────────────────────────────────────────");
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.Write($"{BarFiller("XP", p.CurExp, p.ReqExp)}");
-            Console.ResetColor();
-            Console.Write($" - ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{BarFiller("HP", p.CurHP, p.TotalHP)}");
-            Console.ResetColor();
-            Console.WriteLine("──────────────────────────────────────────────────────────");
-            #endregion
-            EquipmentCheck(context);
-            Console.WriteLine();       
-        }
-        
         /// <summary> Visualize specified Data with 10 Bars </summary>
         public static string BarFiller(string text, int cur, int max)
         {
@@ -297,36 +362,6 @@ namespace TextBasedRPG.UI
             fill += "] ";
             fill += cur.ToString() + "/" + max.ToString();
             return fill;
-        }
-
-        /// <summary>
-        /// TODO : when you change the Item inheritance come back to here and refactor/optimize the code.
-        /// Prints out the Equipped item datas
-        /// </summary>
-        /// <param name="context"></param>
-        public static void EquipmentCheck(GameContext context)
-        {
-            List<(string Name, Item? item)> equipments = new List<(string Name, Item? item)> {
-                ("Weapon", context.Player?.EquippedWeapon),
-                ("Armor", context.Player?.EquippedArmor),
-                ("Necklace", null),
-                //("Ring", null)
-                }; // this is gonna be dynamic in the future
-
-            foreach (var equipment in equipments)
-            {
-                if (equipment.item == null)
-                {
-                    Console.WriteLine($"{equipment.Name} : No {equipment.Name} is equipped");
-                }
-                else
-                {
-                    Console.Write($"{equipment.Name} : ");
-                    SetRarityColor(equipment.item.Rarity.ToString());
-                    Console.WriteLine($"{equipment.item.Name,-20}");
-                    Console.ResetColor();
-                }
-            }
         }
     }
 }

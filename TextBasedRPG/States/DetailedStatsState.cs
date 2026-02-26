@@ -22,7 +22,7 @@ namespace TextBasedRPG.States
             Console.WriteLine($"{"Crit DMG:",-25} %{p?.CritDamage:F1}");
             Console.WriteLine($"{"Evasion:",-25} %{p?.EvasionRate:F1}");
             Console.WriteLine("------------------- Equipment Data ------------------------");
-            MenuUI.EquipmentCheck(context);
+            CharacterUI.EquipmentCheck(context);
             Console.WriteLine("------------------- Training Data -------------------------");
             Console.WriteLine($"Unused Training Points: {p?.UnusedStatPoints}");
             Console.WriteLine($"Total Points Invested: {p?.InvestedSTRPoints + p?.InvestedVITPoints + p?.InvestedDEXPoints + p?.InvestedAGIPoints}");

@@ -25,7 +25,7 @@ namespace TextBasedRPG.States
             }
 
 
-            MenuUI.HeroPreview(context);
+            CharacterUI.HeroPreview(context);
             Console.WriteLine("════════════════ MAIN MENU ════════════════");
             MenuUI.MenuOption("0", "Detailed Stats", "Detailed Player Information.");
             MenuUI.MenuOption("1", "Backpack", "Browse In Your Inventory.");
