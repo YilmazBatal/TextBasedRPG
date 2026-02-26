@@ -6,8 +6,18 @@ public class MapState : IMenuState
     public GameState Update(GameContext context)
     {
         Console.Clear();
-        Console.WriteLine("==========================================================");
-        Console.WriteLine("Welcome to Map Tp any region!");
+        #region Title
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("╔══════════════════════════════════════════════════════╗");
+        Console.Write    ("║");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write    ("                          MAP                         ");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("║");
+        Console.WriteLine("╚══════════════════════════════════════════════════════╝");
+        Console.ResetColor();
+        #endregion
+
         Console.WriteLine("----------------------------------------------------------");
         Console.WriteLine($"[1] STR     - Increases attack & critical damage");
         Console.WriteLine($"[2] VIT     - Increases defence & health");
