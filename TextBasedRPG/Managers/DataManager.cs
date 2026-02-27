@@ -27,6 +27,7 @@ namespace TextBasedRPG.Managers
                     Class = context.Player.ClassName,
                     Level = context.Player.Level,
                     ActiveLocation = context.Player.ActiveLocation,
+                    UnlockedUntill = context.Player.UnlockedUntill,
                     Experience = context.Player.CurExp,
                     CurHP = context.Player.CurHP,
                     Gold = context.Player.Gold,
@@ -155,6 +156,7 @@ namespace TextBasedRPG.Managers
                 context.Player.CurExp = loadedData.Player?.Experience ?? 0;
                 context.Player.CurHP = loadedData.Player?.CurHP ?? 0;
                 context.Player.ActiveLocation = loadedData.Player?.ActiveLocation ?? "L001";
+                context.Player.UnlockedUntill = loadedData.Player?.UnlockedUntill ?? 1;
 
                 // load equipped items
                 context.Player.EquippedWeapon = loadedData.Player?.EquippedWeapon != null ? new Weapon
@@ -335,6 +337,7 @@ namespace TextBasedRPG.Managers
         public int? Gold { get; set; }
         public int? CurHP { get; set; }
         public string? ActiveLocation { get; set; }
+        public int? UnlockedUntill { get; set; }
         public ItemData? EquippedWeapon { get; set; }
         public ItemData? EquippedArmor { get; set; }
         public List<ItemData>? Inventory { get; set; }

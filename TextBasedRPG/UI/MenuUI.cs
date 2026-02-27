@@ -5,9 +5,9 @@ namespace TextBasedRPG.UI
 {
     public static class MenuUI
     {
-        private const int ITEMS_PER_PAGE = 9;
+        public const int ITEMS_PER_PAGE = 9;
         // will do dynamic text in the future
-        private static void MapTitle()
+        public static void MapTitle()
         {
             #region Title
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -21,7 +21,7 @@ namespace TextBasedRPG.UI
             Console.ResetColor();
             #endregion
         }
-        private static void ActiveLocationData(GameContext context)
+        public static void ActiveLocationData(GameContext context)
         {
             int index = LocationManager.GetLocationIndex(context);
 
@@ -32,68 +32,6 @@ namespace TextBasedRPG.UI
             Console.Write($"Monsters Level Cap: ");
             ColoredMsg(ConsoleColor.Red, context.Locations[index].LevelCap.ToString());
             Console.WriteLine();
-        }
-        public static void MapPagination(GameContext context)
-        {
-            var locations = context.Locations;
-            if (locations == null) return;
-
-            int pageCount = (int)Math.Ceiling((double)locations.Count / ITEMS_PER_PAGE);
-            int currentPage = 0;
-            bool inMenu = true;
-
-            while (inMenu)
-            {
-                Console.Clear();
-                MapTitle();
-                ActiveLocationData(context);
-                Console.WriteLine($"══════════════════ LOCATIONS PAGE {currentPage + 1} / {pageCount} ══════════════════");
-                Console.WriteLine();
-                Console.WriteLine($"    {"Location No",-12} {"Location Name",-25} {"Unlocked",-10}");
-                Console.WriteLine("──────────────────────────────────────────────────────────");
-
-                for (int j = 0; j < ITEMS_PER_PAGE; j++)
-                {
-                    int currentIndex = j + (currentPage * ITEMS_PER_PAGE);
-
-                    if (currentIndex >= locations.Count)
-                        break;
-
-                    var item = locations[currentIndex];
-                    Console.Write($"[{j + 1}] {item.ID,-12} {item.Name.ToString(),-25} {"no",-10} ");
-                    Console.WriteLine();
-                }
-                Console.WriteLine("──────────────────────────────────────────────────────────");
-                Console.WriteLine($"[P]revious | [N]ext | [B]ack");
-                Console.WriteLine("══════════════════════════════════════════════════════════");
-                Console.Write("Selection: ");
-
-                string input = Console.ReadLine()?.ToUpper() ?? "";
-
-                if (input == "N")
-                {
-                    if (currentPage < pageCount - 1) currentPage++;
-                }
-                else if (input == "P")
-                {
-                    if (currentPage > 0) currentPage--;
-                }
-                else if (input == "B") inMenu = false;
-                else // selected number
-                {
-                    //if (int.TryParse(input, out int selection) && selection >= 1 && selection <= 9)
-                    //{
-                    //    int realIndex = (currentPage * itemsPerPage) + (selection - 1);
-
-                    //    if (realIndex < locations.Count)
-                    //    {
-                    //        var selectedItem = locations[realIndex];
-
-                    //        ShowItemDetails(locations, selectedItem, isAtShop: false, context);
-                    //    }
-                    //}
-                }
-            }
         }
         public static void BackpackPagination(GameContext context)
         {

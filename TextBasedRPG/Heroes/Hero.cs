@@ -9,6 +9,7 @@ namespace TextBasedRPG.Heroes
         public string? ClassName { get; init; }
         public string? Description { get; init; }
         public string? ActiveLocation { get; set; }
+        public int? UnlockedUntill { get; set; }
         // Equipments 
         public Weapon? EquippedWeapon { get; set; }
         public Armor? EquippedArmor { get; set; }
