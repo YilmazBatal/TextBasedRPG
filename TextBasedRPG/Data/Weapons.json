@@ -1,7 +1,7 @@
 [
 	{
 	  "ID": "W0001",
-	  "Type": "Weapon",
+	  "ItemType": "Weapon",
 	  "Name": "Rusty Sword",
 	  "Description": "An old, rusty blade. Better than bare hands.",
 	  "Price": 15,
@@ -12,7 +12,7 @@
 	},
 	{
 	  "ID": "W0002",
-	  "Type": "Weapon",
+	  "ItemType": "Weapon",
 	  "Name": "Iron Longsword",
 	  "Description": "Standard issue soldier weapon.",
 	  "Price": 150,
@@ -23,7 +23,7 @@
 	},
 	{
 	  "ID": "W0003",
-	  "Type": "Weapon",
+	  "ItemType": "Weapon",
 	  "Name": "Hunter's Bow",
 	  "Description": "Sturdy bow made of yew wood.",
 	  "Price": 200,
@@ -34,7 +34,7 @@
 	},
 	{
 	  "ID": "W0004",
-	  "Type": "Weapon",
+	  "ItemType": "Weapon",
 	  "Name": "War Hammer",
 	  "Description": "Crushes armor with ease.",
 	  "Price": 500,
@@ -45,7 +45,7 @@
 	},
 	{
 	  "ID": "W0005",
-	  "Type": "Weapon",
+	  "ItemType": "Weapon",
 	  "Name": "Dragon Slayer",
 	  "Description": "A legendary blade saID to pierce dragon scales.",
 	  "Price": 2500,

@@ -1,6 +1,7 @@
 ﻿using TextBasedRPG.Entities;
 using TextBasedRPG.Heroes;
 using TextBasedRPG.Interfaces;
+using TextBasedRPG.Items;
 using TextBasedRPG.Locations;
 using TextBasedRPG.States;
 
@@ -63,5 +64,9 @@ namespace TextBasedRPG.Managers
         public bool IsAutoSaveOn { get; set; }
         public List<Entity>? Entities { get; set; }
         public List<Location>? Locations { get; set; }
+        public List<Weapon>? Weapons { get; set; }
+        public List<Armor>? Armors { get; set; }
+        public List<Material>? Materials { get; set; }
+        public List<Consumable>? Consumables { get; set; }
     }
 }

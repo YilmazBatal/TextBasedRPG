@@ -1,7 +1,7 @@
 [
 	{
 	  "ID": "M0001",
-	  "Type": "Material",
+	  "ItemType": "Material",
 	  "Name": "Slime Gel",
 	  "Description": "Sticky green goo.",
 	  "Price": 2,
@@ -11,7 +11,7 @@
 	},
 	{
 	  "ID": "M0002",
-	  "Type": "Material",
+	  "ItemType": "Material",
 	  "Name": "Wolf Fur",
 	  "Description": "Warm and soft.",
 	  "Price": 8,
@@ -21,7 +21,7 @@
 	},
 	{
 	  "ID": "M0003",
-	  "Type": "Material",
+	  "ItemType": "Material",
 	  "Name": "Iron Ore",
 	  "Description": "Raw metal ready for smelting.",
 	  "Price": 25,
@@ -31,7 +31,7 @@
 	},
 	{
 	  "ID": "M0004",
-	  "Type": "Material",
+	  "ItemType": "Material",
 	  "Name": "Magic Dust",
 	  "Description": "Glowing powder.",
 	  "Price": 100,
@@ -41,7 +41,7 @@
 	},
 	{
 	  "ID": "M0005",
-	  "Type": "Material",
+	  "ItemType": "Material",
 	  "Name": "Dragon Scale",
 	  "Description": "Harder than steel, hot to the touch.",
 	  "Price": 1000,

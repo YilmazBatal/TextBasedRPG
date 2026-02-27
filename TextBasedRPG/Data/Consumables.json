@@ -1,7 +1,7 @@
 [
 	{
 	  "ID": "C0001",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Health Potion S",
 	  "Description": "Provides 25% HP.",
 	  "Effect": "HP",
@@ -12,7 +12,7 @@
 	},
 	{
 	  "ID": "C0002",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Health Potion M",
 	  "Description": "Provides 50% HP.",
 	  "Effect": "HP",
@@ -23,7 +23,7 @@
 	},
 	{
 	  "ID": "C0003",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Health Potion L",
 	  "Description": "Provides 100% HP.",
 	  "Effect": "HP",
@@ -34,7 +34,7 @@
 	},
 	{
 	  "ID": "C0004",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Protein Bar",
 	  "Description": "Boosts STR for 2 turns.",
 	  "Effect": "STR",
@@ -46,7 +46,7 @@
 	},
 	{
 	  "ID": "C0005",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Lucky Clover",
 	  "Description": "Increase your crit chance slightly for 5 turns.",
 	  "Effect": "CRI",
@@ -58,7 +58,7 @@
 	},
 	{
 	  "ID": "C0006",
-	  "Type": "Consumable",
+	  "ItemType": "Consumable",
 	  "Name": "Book of Knowledge",
 	  "Description": "Increase your stat point to invest on training grounds.",
 	  "Effect": "BOO",
@@ -69,7 +69,7 @@
 	},
 	{
       "ID": "C0007",
-      "Type": "Consumable",
+      "ItemType": "Consumable",
       "Name": "Energy Drink",
       "Description": "Boosts AGI for 2 turns.",
       "Effect": "AGI",

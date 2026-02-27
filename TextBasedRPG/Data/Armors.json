@@ -1,7 +1,7 @@
 [
 	{
 	  "ID": "A0001",
-	  "Type": "Armor",
+	  "ItemType": "Armor",
 	  "Name": "Tattered Shirt",
 	  "Description": "Provides minimal protection.",
 	  "Price": 10,
@@ -12,7 +12,7 @@
 	},
 	{
 	  "ID": "A0002",
-	  "Type": "Armor",
+	  "ItemType": "Armor",
 	  "Name": "Leather Vest",
 	  "Description": "Lightweight and flexible.",
 	  "Price": 120,
@@ -23,7 +23,7 @@
 	},
 	{
 	  "ID": "A0003",
-	  "Type": "Armor",
+	  "ItemType": "Armor",
 	  "Name": "Chainmail",
 	  "Description": "Interlocking metal rings.",
 	  "Price": 350,
@@ -34,7 +34,7 @@
 	},
 	{
 	  "ID": "A0004",
-	  "Type": "Armor",
+	  "ItemType": "Armor",
 	  "Name": "Steel Plate",
 	  "Description": "Heavy protection for knights.",
 	  "Price": 900,
@@ -45,7 +45,7 @@
 	},
 	{
 	  "ID": "A0005",
-	  "Type": "Armor",
+	  "ItemType": "Armor",
 	  "Name": "VoID Armor",
 	  "Description": "Armor forged from the darkness itself.",
 	  "Price": 3000,

@@ -27,7 +27,7 @@ namespace TextBasedRPG.UI
 
             Console.WriteLine();
             Console.Write($"Currently in: ");
-            ColoredMsg(ConsoleColor.White, text: context.Locations[index].Name);
+            ColoredMsg(ConsoleColor.White, text: context.Locations![index].Name);
             Console.WriteLine($"Description: {context.Locations[index].Description}");
             Console.Write($"Monsters Level Cap: ");
             ColoredMsg(ConsoleColor.Red, context.Locations[index].LevelCap.ToString());
@@ -58,7 +58,7 @@ namespace TextBasedRPG.UI
                         break;
 
                     var item = inventory[currentIndex];
-                    Console.Write($"[{j + 1}] {item.Name,-20} {item.Type.ToString(),-10} "); SetRarityColor(item.Rarity.ToString()); Console.WriteLine($"{item.Rarity.ToString(),10}"); Console.ResetColor();
+                    Console.Write($"[{j + 1}] {item.Name,-20} {item.ItemType.ToString(),-10} "); SetRarityColor(item.Rarity.ToString()); Console.WriteLine($"{item.Rarity.ToString(),10}"); Console.ResetColor();
                 }
                 Console.WriteLine("---------------------------------------------------------");
                 Console.WriteLine($"Player Level: {(context.Player?.Level)}");
