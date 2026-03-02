@@ -28,7 +28,7 @@ namespace TextBasedRPG.Heroes
         public int InvestedDEXPoints { get; internal set; } = 0;
         public int InvestedAGIPoints { get; internal set; } = 0;
         // Currency
-        public int Gold { get; internal set; } = 100;
+        public int Gold { get; internal set; } = 0;
         // Advanced stats             
         public int BonusATK { get; internal set; }
         public int BonusDef { get; internal set; }
@@ -36,7 +36,7 @@ namespace TextBasedRPG.Heroes
         public int TotalDEF => BaseDEF + (EquippedArmor?.ArmorDef ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5) + BonusDef;
         public int TotalHP => BaseHP + (EquippedArmor?.ExtraHP ?? 0) + (int)Math.Round(InvestedVITPoints * 1.5);
         public int TotalSPD => 30 + (int)Math.Round(InvestedAGIPoints * 1.5);
-        public int CurHP { get; internal set; }
+        public int CurHP { get; internal set; } = 100;
         public double CritRate => 5 + InvestedDEXPoints * 1.0 / 3.0; // %
         public double CritDamage => 150 + InvestedSTRPoints; // %
         public double EvasionRate => 5 + InvestedAGIPoints * 1.0 / 3.0;
@@ -71,6 +71,10 @@ namespace TextBasedRPG.Heroes
                 if (CurHP < 0) CurHP = 0;
             }
 
+        }
+        public void FullHeal()
+        {
+            CurHP = TotalHP;
         }
     }
 }
