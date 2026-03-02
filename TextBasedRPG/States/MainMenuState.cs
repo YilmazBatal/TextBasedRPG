@@ -37,6 +37,7 @@ namespace TextBasedRPG.States
             MenuUI.MenuOption("A", "Auto Save", $"Toggle Auto Save. Currently : { (context.IsAutoSaveOn ? "ON" : "OFF")}.");
             MenuUI.MenuOption("S", "Save Game", "Save Progress.");
             MenuUI.MenuOption("Q", "Quit", "Quit The Game.");
+            MenuUI.MenuOption("W", "Wipe", "Wipe Your Entire Data!");
             
             Console.Write("\nSelection » ");
             string? input = Console.ReadLine()?.ToUpper();
@@ -73,6 +74,7 @@ namespace TextBasedRPG.States
                 "5" => GameState.Dungeon,
                 "6" => GameState.Map,
                 "Q" => GameState.Exit,
+                "W" => GameState.Wipe,
                 _ => GameState.MainMenu
             };
 

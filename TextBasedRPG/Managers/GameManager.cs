@@ -10,15 +10,15 @@ namespace TextBasedRPG.Managers
     public class GameManager
     {
         private GameState _currentState = GameState.HeroSelection; // Initial Menu
-        private GameContext _context = new GameContext(); // Data to save
+        private GameContext _context = new GameContext(); // init data
         private readonly Dictionary<GameState, IMenuState> _states; // Game state
         private readonly ISaveService _saveService; // Saving service
 
         public GameManager(ISaveService saveService)
         {
             // Save Service
-            _saveService = saveService;
-            _context = _saveService.LoadGame() ?? new GameContext();
+            _saveService = saveService; // <-- this initialized from program.cs
+            _context = _saveService.LoadGame(); // ?? new GameContext();
 
             if (_context.Player != null)
             {
@@ -35,6 +35,8 @@ namespace TextBasedRPG.Managers
                 { GameState.Training, new TrainingState() },
                 { GameState.Adventure, new AdventureState() },
                 { GameState.Map, new MapState() },
+                { GameState.Quests, new QuestState() },
+                { GameState.Wipe, new WipeState() },
                 { GameState.Dungeon, new DungeonState() },
             };
         }
