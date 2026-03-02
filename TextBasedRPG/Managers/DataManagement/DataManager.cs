@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using TextBasedRPG.Heroes;
 using TextBasedRPG.Items;
 using TextBasedRPG.Locations;
@@ -14,7 +15,7 @@ namespace TextBasedRPG.Managers.DataManagement
         #region Save
         public void SaveGame(GameContext context)
         {
-            if (context.Player == null) return; // if there is no hero, it means no game progress
+            if (context == null) return; // if there is no hero, it means no game progress
 
             // Mapping
             var saveData = new Data
@@ -85,7 +86,13 @@ namespace TextBasedRPG.Managers.DataManagement
                 MenuUI.ColoredMsg(ConsoleColor.Yellow, "[SYSTEM] Creating a new save file...");
                 Thread.Sleep(400);
 
-                return new GameContext();
+                var newContext = new GameContext();
+
+                StaticData.LoadStaticDatas(newContext);
+
+                newContext.Player = null;
+
+                return newContext;
             }
 
             // Read File and cache it as a string
@@ -114,15 +121,15 @@ namespace TextBasedRPG.Managers.DataManagement
                 context.Player.Gold = loadedData.Player?.Gold ?? 100;
                 context.Player.Level = loadedData.Player?.Level ?? 1;
                 context.Player.CurExp = loadedData.Player?.Experience ?? 0;
-                context.Player.CurHP = loadedData.Player?.CurHP ?? 0;
+                context.Player.CurHP = loadedData.Player?.CurHP ?? 1;
                 context.Player.ActiveLocation = loadedData.Player?.ActiveLocation ?? "L001";
                 context.Player.UnlockedUntill = loadedData.Player?.UnlockedUntill ?? 1;
 
                 // load equipped items
 
 
-                string? savedWeaponID = loadedData.Player?.EquippedWeapon;
-                string? savedArmorID = loadedData.Player?.EquippedArmor;
+                string? savedWeaponID = loadedData.Player?.EquippedWeapon ?? "W0001";
+                string? savedArmorID = loadedData.Player?.EquippedArmor ?? "A0001";
                 context.Player.EquippedWeapon = context.Weapons?.FirstOrDefault(x => x.ID == savedWeaponID);
                 context.Player.EquippedArmor = context.Armors?.FirstOrDefault(x => x.ID == savedArmorID);
 
@@ -168,11 +175,17 @@ namespace TextBasedRPG.Managers.DataManagement
     {
         public Player? Player { get; set; }
         public bool IsAutoSaveOn { get; set; } = true;
+        [JsonIgnore]
         public List<MobData>? EntityList { get; set; }
+        [JsonIgnore]
         public List<Location>? Locations { get; set; }
+        [JsonIgnore]
         public List<Weapon>? Weapons { get; set; }
+        [JsonIgnore]
         public List<Armor>? Armors { get; set; }
+        [JsonIgnore]
         public List<Material>? Materials { get; set; }
+        [JsonIgnore]
         public List<Consumable>? Consumables { get; set; }
     }
 }
