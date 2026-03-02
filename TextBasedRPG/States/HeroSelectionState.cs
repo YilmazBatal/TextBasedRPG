@@ -1,6 +1,7 @@
 ﻿using TextBasedRPG.Heroes;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.Managers;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.States
 {
@@ -18,12 +19,13 @@ namespace TextBasedRPG.States
             while (context.Player == null)
             {
                 Console.Clear();
-                Console.WriteLine("Please choose a hero to overview Eg. 1");
+                MenuUI.ColoredMsg(ConsoleColor.DarkGray, "Please choose a hero to overview Eg. 1");
+                Console.WriteLine("=== HERO SELECTION ===");
                 Console.WriteLine($"""
                  ---------------------
                     [1]. Warrior 
                     [2]. Archer
-                    More Heroes soon...
+                    [3]. Mage
                  ---------------------
                  """);
 
@@ -33,16 +35,26 @@ namespace TextBasedRPG.States
                 {
                     "1" => new Warrior(),
                     "2" => new Archer(),
+                    "3" => new Mage(),
                     _ => null
                 };
 
-                if (candidate != null && ConfirmSelection(candidate))
+                if (candidate == null)
+                {
+                    MenuUI.ColoredMsg(ConsoleColor.Red, "\n[SYSTEM] Invalid choice! Press any key to try again...");
+                    Console.ReadKey();
+                    return GameState.HeroSelection;
+                }
+
+                if (ConfirmSelection(candidate))
                 {
                     context.Player = candidate;
+                    context.Player.ActiveLocation = "L001";
+                    candidate.FullHeal();
                     _saveService.SaveGame(context);
                     return GameState.MainMenu;
                 }
-            }
+            }    
             return GameState.HeroSelection;
         }
 
