@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using TextBasedRPG.Heroes;
 using TextBasedRPG.Items;
 using TextBasedRPG.Locations;
 using TextBasedRPG.Models;
@@ -106,63 +105,7 @@ namespace TextBasedRPG.Managers.DataManagement
             StaticData.LoadStaticDatas(context);
 
             // Data Mapping
-            if (loadedData != null)
-            {
-                context.IsAutoSaveOn = loadedData.IsAutoSaveOn;
-
-                context.Player = (loadedData.Player?.Class switch
-                {
-                    "Warrior" => new Warrior(),
-                    "Archer" => new Archer(),
-                    "Mage" => new Mage(),
-                    _ => new Warrior(), // make it direct to the selection menu maybe?
-                }); // %100 can't be null
-
-                context.Player.Gold = loadedData.Player?.Gold ?? 100;
-                context.Player.Level = loadedData.Player?.Level ?? 1;
-                context.Player.CurExp = loadedData.Player?.Experience ?? 0;
-                context.Player.CurHP = loadedData.Player?.CurHP ?? 1;
-                context.Player.ActiveLocation = loadedData.Player?.ActiveLocation ?? "L001";
-                context.Player.UnlockedUntill = loadedData.Player?.UnlockedUntill ?? 1;
-
-                // load equipped items
-
-
-                string? savedWeaponID = loadedData.Player?.EquippedWeapon ?? "W0001";
-                string? savedArmorID = loadedData.Player?.EquippedArmor ?? "A0001";
-                context.Player.EquippedWeapon = context.Weapons?.FirstOrDefault(x => x.ID == savedWeaponID);
-                context.Player.EquippedArmor = context.Armors?.FirstOrDefault(x => x.ID == savedArmorID);
-
-
-
-                if (loadedData.Player?.Inventory != null)
-                {
-                    context.Player.Inventory?.Clear();
-
-                    var allMasterItems = context.Weapons!.Cast<Item>()
-                        .Concat(context.Armors!)
-                        .Concat(context.Materials!)
-                        .Concat(context.Consumables!).ToList();
-
-                    foreach (var itemSave in loadedData.Player.Inventory)
-                    {
-                        var masterItem = allMasterItems.FirstOrDefault(i => i.ID == itemSave.ID);
-
-                        if (masterItem != null)
-                        {
-                            masterItem.Quantity = itemSave.Quantity;
-
-                            context.Player.Inventory?.Add(masterItem);
-                        }
-                    }
-                }
-
-                context.Player.UnusedStatPoints = loadedData.Player?.Stats?.UnusedStatPoints ?? 0;
-                context.Player.InvestedSTRPoints = loadedData.Player?.Stats?.InvestedSTR ?? 0;
-                context.Player.InvestedVITPoints = loadedData.Player?.Stats?.InvestedVIT ?? 0;
-                context.Player.InvestedDEXPoints = loadedData.Player?.Stats?.InvestedDEX ?? 0;
-                context.Player.InvestedAGIPoints = loadedData.Player?.Stats?.InvestedAGI ?? 0;
-            }
+            DynamicData.LoadPlayerData(context, loadedData!);
 
             MenuUI.ColoredMsg(ConsoleColor.Green, "\n[SYSTEM] Game loaded successfully.");
             Thread.Sleep(1000);
