@@ -31,8 +31,9 @@ namespace TextBasedRPG.States
             Console.WriteLine($"{"DEX:",-25} {p?.InvestedDEXPoints}");
             Console.WriteLine($"{"AGI:",-25} {p?.InvestedAGIPoints}");
             Console.WriteLine("===========================================================");
-            Console.Write("Press any key to go back...");
-            Console.ReadKey();
+            Console.Write("[SYSTEM] Press any key to go back...");
+            Console.ReadKey(true);
+
             return GameState.MainMenu;
         }
     }

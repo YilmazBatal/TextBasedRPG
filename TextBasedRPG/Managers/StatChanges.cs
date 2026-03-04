@@ -60,7 +60,7 @@ namespace TextBasedRPG.Managers
                 _player.BonusATK -= _percentage;
                 EventManager.Combat.OnRoundEnded -= Tick;
                 Console.WriteLine("\n[SYSTEM] Bonus Attack effect has worn off!");
-                Console.ReadLine();
+                Console.ReadKey(true);
             }
         }
     }

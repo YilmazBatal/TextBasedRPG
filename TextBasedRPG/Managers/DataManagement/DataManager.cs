@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using TextBasedRPG.Events;
 using TextBasedRPG.Items;
 using TextBasedRPG.Locations;
 using TextBasedRPG.Models;
@@ -45,7 +46,7 @@ namespace TextBasedRPG.Managers.DataManagement
             };
             // convert items to itemdata and append to player inventory json
             List<InventoryData> convertedInventory = new List<InventoryData>();
-            
+
             if (context.Player.Inventory != null)
             {
                 foreach (var item in context.Player.Inventory)
@@ -56,11 +57,11 @@ namespace TextBasedRPG.Managers.DataManagement
                         Quantity = item.Quantity
                     };
                     convertedInventory.Add(itemData);
-                }            
+                }
             }
-               
+
             saveData.Player.Inventory = convertedInventory;
-            
+
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(saveData, options);
 
@@ -74,7 +75,7 @@ namespace TextBasedRPG.Managers.DataManagement
 
         }
         #endregion
-        
+
         #region Load
         public GameContext LoadGame()
         {
@@ -90,6 +91,8 @@ namespace TextBasedRPG.Managers.DataManagement
                 StaticData.LoadStaticDatas(newContext);
 
                 newContext.Player = null;
+
+                InitializeEvents(newContext);
 
                 return newContext;
             }
@@ -107,13 +110,27 @@ namespace TextBasedRPG.Managers.DataManagement
             // Data Mapping
             DynamicData.LoadPlayerData(context, loadedData!);
 
+            InitializeEvents(context);
+
             MenuUI.ColoredMsg(ConsoleColor.Green, "\n[SYSTEM] Game loaded successfully.");
             Thread.Sleep(1000);
             return context;
-        }        
+        }
         #endregion
-    }
 
+
+        /// <summary>
+        /// Subscribe to events
+        /// </summary>
+        /// <param name="context"></param>
+        private static void InitializeEvents(GameContext context)
+        {
+            // clearing in case cuz defensive programming
+            EventManager.HeroEvents.OnExpGained -= (amount) => LevelManager.CheckLevelUp(context);
+            EventManager.HeroEvents.OnExpGained += (amount) => LevelManager.CheckLevelUp(context);
+        }
+
+    }
     public class Data
     {
         public Player? Player { get; set; }

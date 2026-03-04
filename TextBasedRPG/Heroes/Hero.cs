@@ -1,10 +1,12 @@
 ﻿using TextBasedRPG.Interfaces;
+using TextBasedRPG.Models;
+using TextBasedRPG.UI;
 
 namespace TextBasedRPG.Heroes
 {
     public abstract class Hero : IDamageable
     {
-        public List<Item>? Inventory {  get; set; } = new List<Item>();
+        public List<InventoryData>? Inventory {  get; set; } = new List<InventoryData>();
         // Basic Info
         public string? ClassName { get; init; }
         public string? Description { get; init; }
@@ -75,6 +77,24 @@ namespace TextBasedRPG.Heroes
         public void FullHeal()
         {
             CurHP = TotalHP;
+        }
+
+        public void ApplyDeathPenalty()
+        {
+            int goldPenalty = (int)(Gold * 0.10);
+            Gold -= goldPenalty;
+
+            int expPenalty = (int)(CurExp * 0.33);
+            CurExp -= expPenalty;
+
+            if (CurExp < 0) CurExp = 0;
+
+            CurHP = TotalHP;
+
+            MenuUI.ColoredMsg(ConsoleColor.Red, "\n[DEATH] You have died and suffered penalties.");
+            MenuUI.ColoredMsg(ConsoleColor.Yellow, $"[PENALTY] Lost Gold: {goldPenalty}");
+            MenuUI.ColoredMsg(ConsoleColor.Cyan, $"[PENALTY] Lost Experience: {expPenalty}");
+            MenuUI.ColoredMsg(ConsoleColor.Yellow, $"[SYSTEM] You will be resurrected.");
         }
     }
 }

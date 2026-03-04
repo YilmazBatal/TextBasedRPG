@@ -17,11 +17,14 @@ namespace TextBasedRPG.Entities
         public int BaseSPD;
         public int Level;
         public Dictionary<string, int>? LootTable;  // ID, Chances%
+        public List<string> Locations;
         public double GoldMultiplier;
         public EntityType EntityType;
 
         // Runtime datas
+        public double PowerScore => (BaseHP * 0.1) + (BaseATK * 2) + (BaseDEF * 1.5) + (BaseSPD * 0.5);
         public int TotalHP => (int)Math.Round((decimal)BaseHP + (decimal)(BaseHP * GeneratedLevel * 20 / 100 * (isElite ? Scaling : 1)));
+        public int GoldReward => (int)Math.Round((decimal)BaseHP + (decimal)(BaseHP * GeneratedLevel * 20 / 100 * (isElite ? Scaling : 1)));
         public int CurHP { get; set; }
         public int TotalATK => (int)Math.Round((decimal)BaseATK + (decimal)(BaseATK * GeneratedLevel * 20/100 * (isElite ? Scaling : 1)));
         public int TotalDEF => (int)Math.Round((decimal) BaseDEF + (decimal) (BaseDEF * GeneratedLevel * 5/100 * (isElite? Scaling : 1)));

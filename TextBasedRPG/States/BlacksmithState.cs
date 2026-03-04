@@ -8,7 +8,7 @@ public class BlacksmithState : IMenuState
         Console.Clear();
         Console.WriteLine("You are at the Blacksmith... Press any key to continue.");
 
-        Console.ReadKey();
+        Console.ReadKey(true);
         return GameState.MainMenu;
     }
 }

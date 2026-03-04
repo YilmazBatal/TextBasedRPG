@@ -12,6 +12,7 @@
         public int Scaling { get; set; }
         public int EliteChance { get; set; }
         public Dictionary<string, int> LootTable { get; set; } = new(); // ID, Chances%
+        public List<string> Locations { get; set; } = new();
         public double GoldMultiplier { get; set; }
         public string EntityType = string.Empty;
     }

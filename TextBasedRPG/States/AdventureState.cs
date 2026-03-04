@@ -3,11 +3,11 @@ using TextBasedRPG.Managers;
 
 public class AdventureState : IMenuState
 {
-    const int adventureTextChance = 25;         // 25
-    const int monsterEncounterChance = 80;      // 55
-    const int itemFindingChance = 85;           // 5
-    const int miniEventChance = 95;             // 10
-    const int chestChance = 100;                 // 5
+    const int adventureTextChance = 20;         // 20%
+    const int monsterEncounterChance = 80;      // 60%
+    const int itemFindingChance = 85;           // 5%
+    const int miniEventChance = 95;             // 10%
+    const int chestChance = 100;                 // 5%
     //const int merchantEncounterChance = 0; // in the future
     public bool isAdventuring = true;
     public GameState Update(GameContext context)
@@ -21,7 +21,7 @@ public class AdventureState : IMenuState
             {
                 case <= adventureTextChance:
                     var currentLocationasObject = context.Locations?.FirstOrDefault(r => r.ID == context.Player?.ActiveLocation);
-                    string randomText = currentLocationasObject.AdventureTexts[Random.Shared.Next(0, currentLocationasObject.AdventureTexts.Count + 1)];
+                    string randomText = currentLocationasObject!.AdventureTexts![Random.Shared.Next(0, currentLocationasObject.AdventureTexts.Count + 1)];
                     BruteForceTypeWriter(randomText);
                     break;
                 case <= monsterEncounterChance:
@@ -64,6 +64,7 @@ public class AdventureState : IMenuState
 
     public void GenerateItem()
     {
+        // add items to location json and when the player finds an item get the item from the location json and add it to the player inventory
         Console.WriteLine("You have found an item");
         Console.WriteLine("Item given to the player");
     }

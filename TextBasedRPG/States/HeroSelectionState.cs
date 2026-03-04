@@ -42,7 +42,7 @@ namespace TextBasedRPG.States
                 if (candidate == null)
                 {
                     MenuUI.ColoredMsg(ConsoleColor.Red, "\n[SYSTEM] Invalid choice! Press any key to try again...");
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     return GameState.HeroSelection;
                 }
 

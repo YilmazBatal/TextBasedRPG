@@ -1,4 +1,5 @@
 ﻿using TextBasedRPG.Heroes;
+using TextBasedRPG.Models;
 
 namespace TextBasedRPG.Managers.DataManagement
 {
@@ -47,18 +48,22 @@ namespace TextBasedRPG.Managers.DataManagement
                 context.Player.Inventory?.Clear();
 
                 var allMasterItems = context.Weapons!.Cast<Item>()
-                    .Concat(context.Armors!)
-                    .Concat(context.Materials!)
-                    .Concat(context.Consumables!).ToList();
+                    .Concat(context.Armors!.Cast<Item>())
+                    .Concat(context.Materials!.Cast<Item>())
+                    .Concat(context.Consumables!.Cast<Item>())
+                    .ToList();
 
                 foreach (var itemSave in loadedData.Player.Inventory)
                 {
-                    var masterItem = allMasterItems.FirstOrDefault(i => i.ID == itemSave.ID);
+                    var foundItem = allMasterItems.FirstOrDefault(i => i.ID == itemSave.ID);
 
-                    if (masterItem != null)
+                    if (foundItem != null)
                     {
-                        masterItem.Quantity = itemSave.Quantity;
-                        context.Player.Inventory?.Add(masterItem);
+                        InventoryData itemToAdd = new InventoryData();
+                        itemToAdd.ID = itemSave.ID;
+                        itemToAdd.Quantity = itemSave.Quantity;
+
+                        context.Player.Inventory?.Add(itemToAdd);
                     }
                 }
             }

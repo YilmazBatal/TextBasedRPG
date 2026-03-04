@@ -1,5 +1,5 @@
-﻿using System.Net.Mime;
-using TextBasedRPG.Entities;
+﻿using TextBasedRPG.Entities;
+using TextBasedRPG.Locations;
 
 namespace TextBasedRPG.Managers
 {
@@ -7,18 +7,28 @@ namespace TextBasedRPG.Managers
     {
         public static Entity GenerateEnemy(GameContext context)
         {
-            string id = "E0001";
-            var template = context.Entities?.FirstOrDefault(e => e.ID == id); // For now its hardcoded
+            string currentLocationId = context.Player?.ActiveLocation ?? "L001";
+            var availablePool = context.Entities?
+                .Where(e => e.ID.StartsWith("E") &&
+                           e.Locations != null &&
+                           e.Locations.Contains(currentLocationId))
+                .ToList();
 
-            if (template == null) throw new Exception($"[DATA ERROR] Couldnt find: {id}. Please check if Entities.json exists.");
+            if (availablePool == null || availablePool.Count == 0)
+            {
+                throw new Exception($"[DATA ERROR] No enemies found for location: {currentLocationId}. " +
+                                    "Check Entities.json for matching Location IDs.");
+            }
 
-            Entity? newEntity;
-            if (template.EntityType == EntityType.Boss)
-                newEntity = new Boss();
-            else
-                newEntity = new Enemy();
+            int randomIndex = Random.Shared.Next(0, availablePool.Count);
+            var template = availablePool[randomIndex];
 
-            // Mapping
+            Entity newEntity = new Enemy();
+            
+            return MapEntityData(template, newEntity, context);
+        }
+        private static Entity MapEntityData(Entity template, Entity newEntity, GameContext context)
+        {
             newEntity.ID = template.ID;
             newEntity.Name = template.Name;
             newEntity.BaseHP = template.BaseHP;
@@ -30,11 +40,11 @@ namespace TextBasedRPG.Managers
             newEntity.LootTable = template.LootTable;
             newEntity.GoldMultiplier = template.GoldMultiplier;
             newEntity.EntityType = template.EntityType;
-                                                                                            // make this dynamic
-            newEntity.Initialize(playerLevel : context.Player.Level, levelCap : context.Locations[0].LevelCap);
+
+            Location currentLocation = context.Locations!.FirstOrDefault(x => x.ID == context.Player!.ActiveLocation) ?? context.Locations![0];
+            newEntity.Initialize(playerLevel: context.Player!.Level, levelCap: currentLocation.LevelCap);
 
             newEntity.Level = newEntity.GeneratedLevel;
-
             return newEntity;
         }
     }

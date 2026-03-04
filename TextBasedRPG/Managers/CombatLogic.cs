@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using TextBasedRPG.Entities;
-using TextBasedRPG.Events;
+﻿using TextBasedRPG.Entities;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.UI;
 
@@ -11,14 +9,21 @@ namespace TextBasedRPG.Managers
         /// <returns>Enemy's condition based on HP percentage</returns>
         public static string GetEnemyStatus(Entity enemy)
         {
+            // ANSI
+            string red = "\u001b[31m";
+            string yellow = "\u001b[33m";
+            string reset = "\u001b[0m"; // default color
+
+            string coloredName = $"{red}{enemy.Name}{reset}";
+
             if (enemy.CurHP >= enemy.TotalHP * 75 / 100)
-                return $"{enemy.Name} looks ready to fight!";
+                return $"[BATTLE] {coloredName} looks ready to fight!";
             else if (enemy.CurHP >= enemy.TotalHP * 50 / 100)
-                return $"{enemy.Name} is watching you carefuly";
+                return $"[BATTLE] {coloredName} is watching you carefully";
             else if (enemy.CurHP >= enemy.TotalHP * 20 / 100)
-                return $"{enemy.Name} looks slightly tired to fight...";
+                return $"[BATTLE] {coloredName} looks slightly tired to fight...";
             else
-                return $"{enemy.Name} is panicking!";
+                return $"[BATTLE] {yellow}{enemy.Name}{reset} is panicking!";
         }
 
         #region Enemy Acts
@@ -36,14 +41,14 @@ namespace TextBasedRPG.Managers
             Thread.Sleep(500);
             Console.WriteLine($"""
 
-                {entity.Name} Attacked!
+                [BATTLE] {entity.Name} Attacked!
 
                 """);
             context.Player.TakeDamage(dmg);
             log.Add($"E:{entity.Name} dealt {dmg} dmg");
             CombatManager.OnHit(dmg, isCrit);
-            Console.WriteLine("\nPress any key...");
-            Console.ReadKey();
+            Console.WriteLine("\n[SYSTEM] Press any key...");
+            Console.ReadKey(true);
 
         }
         #endregion
@@ -65,10 +70,10 @@ namespace TextBasedRPG.Managers
                  (2) Focus           - Increase chances of Crit, Dodge or Escape
                  (3) Guard Up        - Take less damage this turn
                  (4) Backpack        - Browse through your Equipments and Consumables
-                 (5) Run Away        - Running away is not guaranteed
+                 (5) Run Away {CalculateRunAwayChance(context, entity).ToString() + "%"}     - Are you fast enough to run away?
                  
                  """);
-                Console.Write("Selection : ");
+                Console.Write("Selection : ");  
                 string? input = Console.ReadLine()?.Trim();
 
                 if (input == "1")
@@ -83,12 +88,12 @@ namespace TextBasedRPG.Managers
                     acted = CombatRunAway(context, entity, log);
                 else
                 {
-                    Console.WriteLine("You flinched be careful! (Turn skipped)");
+                    Console.WriteLine("[BATTLE] You flinched be careful! (Turn skipped)");
                     log.Add("P:User flinched damage (Turn skipped)");
                     acted = true;
                 }
-                Console.WriteLine("Press any key...");
-                Console.ReadKey();
+                Console.WriteLine("[SYSTEM] Press any key...");
+                Console.ReadKey(true);
             }
 
         }
@@ -99,7 +104,7 @@ namespace TextBasedRPG.Managers
             int damage = damageCalc.CalculateDMG(p.TotalATK, entity.TotalDEF, p.CritRate, p.CritDamage, out bool isCrit);
             string critText = isCrit ? "Critical hit!" : "";
 
-            Console.WriteLine("\nYou performed and attack");
+            Console.WriteLine("\n[BATTLE] You performed and attack");
             Thread.Sleep(1000);
             entity.TakeDamage(damage);
 
@@ -133,33 +138,37 @@ namespace TextBasedRPG.Managers
                 return true;
             }
         }
+
         public static bool CombatRunAway(GameContext context, Entity entity, List<string> log)
         {
-            int enemySpeed = entity.CurrentSPD;
-            int playerSpeed = context.Player.TotalSPD;
-            int baseLuck = 50; // %
-            int luckMultiplier = 2;
-            int chance = baseLuck + (playerSpeed - enemySpeed) * luckMultiplier;
-            chance = Math.Clamp(chance, 0, 100);
-
             int roll = Random.Shared.Next(0, 100);
-            bool success = roll < chance;
+            bool success = roll < CalculateRunAwayChance(context, entity);
 
             if (success)
             {
                 log.Add("P:User ran away.");
-                MenuUI.ColoredMsg(ConsoleColor.Yellow, "You ran away successfuly!");
-                Console.WriteLine("\nPress Any Key...");
-                Console.ReadKey();
+                MenuUI.ColoredMsg(ConsoleColor.Yellow, "[BATTLE] You ran away successfuly!");
+                Console.WriteLine("\n[SYSTEM] Press Any Key...");
+                Console.ReadKey(true);
                 CombatManager.isCombatActive = false;
             }
             else
             {
                 log.Add("P:User tried to run away but FAILED!");
-                MenuUI.ColoredMsg(ConsoleColor.Yellow, "You couldn't run away!");
+                MenuUI.ColoredMsg(ConsoleColor.Yellow, "[BATTLE] You couldn't run away!");
             }
             return true;
         }
         #endregion
+        private static int CalculateRunAwayChance(GameContext context, Entity entity)
+        {
+            int enemySpeed = entity.CurrentSPD;
+            int playerSpeed = context.Player.TotalSPD;
+            int baseLuck = 50; // %
+            int luckMultiplier = 2;
+            int runAwayChance = baseLuck + (playerSpeed - enemySpeed) * luckMultiplier;
+            int runAwayChanceFinal = Math.Clamp(runAwayChance, 0, 100);
+            return runAwayChanceFinal;
+        }
     }
 }

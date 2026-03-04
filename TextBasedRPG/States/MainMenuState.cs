@@ -34,6 +34,7 @@ namespace TextBasedRPG.States
             MenuUI.MenuOption("4", "Adventure", "Fight Monsters and Find Loots.");
             MenuUI.MenuOption("5", "Region Boss", "Challange The Boss.");
             MenuUI.MenuOption("6", "Map", "View Map and Travel.");
+            MenuUI.MenuOption("7", "Quests", "View Quest Board and Get The DUNGEON KEY.");
             MenuUI.MenuOption("A", "Auto Save", $"Toggle Auto Save. Currently : { (context.IsAutoSaveOn ? "ON" : "OFF")}.");
             MenuUI.MenuOption("S", "Save Game", "Save Progress.");
             MenuUI.MenuOption("Q", "Quit", "Quit The Game.");
@@ -73,6 +74,7 @@ namespace TextBasedRPG.States
                 "4" => GameState.Adventure,
                 "5" => GameState.Dungeon,
                 "6" => GameState.Map,
+                "7" => GameState.Quests,
                 "Q" => GameState.Exit,
                 "W" => GameState.Wipe,
                 _ => GameState.MainMenu

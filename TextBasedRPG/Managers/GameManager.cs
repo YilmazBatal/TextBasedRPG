@@ -43,6 +43,7 @@ namespace TextBasedRPG.Managers
 
         public void Run()
         {
+            
             while (_currentState != GameState.Exit)
             {
                 if (_states.ContainsKey(_currentState))
@@ -70,5 +71,15 @@ namespace TextBasedRPG.Managers
         public List<Armor>? Armors { get; set; }
         public List<Material>? Materials { get; set; }
         public List<Consumable>? Consumables { get; set; }
+        public Dictionary<string, Item> MasterItemBook { get; private set; } = new();
+        public void InitializeMasterBook()
+        {
+            var all = Weapons!.Cast<Item>()
+                .Concat(Armors!)
+                .Concat(Materials!)
+                .Concat(Consumables!);
+
+            MasterItemBook = all.ToDictionary(item => item.ID, item => item);
+        }
     }
 }

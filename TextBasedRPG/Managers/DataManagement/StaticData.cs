@@ -24,6 +24,7 @@ namespace TextBasedRPG.Managers.DataManagement
             LoadArmors(context);
             LoadMaterials(context);
             LoadConsumables(context);
+            context.InitializeMasterBook();
         }
 
         private static void LoadLocations(GameContext context)
@@ -52,6 +53,7 @@ namespace TextBasedRPG.Managers.DataManagement
                         description: location.Description,
                         levelCap: location.LevelCap,
                         texts: location.AdventureTexts,
+                        loots: location.AdventureLoots,
                         entities: location.Entities
                     );
                     context.Locations?.Add(mappedLocation);
@@ -93,6 +95,7 @@ namespace TextBasedRPG.Managers.DataManagement
                     mappedEntity.BaseSPD = data.BaseSPD;
                     mappedEntity.GoldMultiplier = data.GoldMultiplier;
                     mappedEntity.LootTable = data.LootTable ?? new();
+                    mappedEntity.Locations = data.Locations ?? new();
                     if (Enum.TryParse<EntityType>(data.EntityType.ToString(), true, out var type))
                     {
                         mappedEntity.EntityType = type;
