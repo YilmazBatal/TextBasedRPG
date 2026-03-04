@@ -1,5 +1,5 @@
-﻿using TextBasedRPG.Events;
-using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Core.Heroes;
+using TextBasedRPG.Events;
 
 namespace TextBasedRPG.Managers
 {

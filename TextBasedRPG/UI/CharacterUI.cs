@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Managers;
+﻿using TextBasedRPG.Core.Items;
+using TextBasedRPG.Managers;
 
 namespace TextBasedRPG.UI
 {

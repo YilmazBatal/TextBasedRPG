@@ -9,6 +9,7 @@
         public List<string>? AdventureTexts { get; init; }
         public List<Loots>? AdventureLoots { get; init; }
         public List<string>? Entities { get; init; }
+
     }
     public class Loots
     {

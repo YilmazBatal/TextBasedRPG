@@ -1,4 +1,4 @@
-﻿using TextBasedRPG.Locations;
+﻿using TextBasedRPG.Core.Items;
 using TextBasedRPG.Managers;
 using TextBasedRPG.Models;
 

@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Entities;
+﻿using TextBasedRPG.Core.Entities;
+using TextBasedRPG.Core.Items;
 using TextBasedRPG.Events;
 using TextBasedRPG.Models;
 using TextBasedRPG.UI;

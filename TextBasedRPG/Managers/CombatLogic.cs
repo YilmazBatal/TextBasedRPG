@@ -1,4 +1,4 @@
-﻿using TextBasedRPG.Entities;
+﻿using TextBasedRPG.Core.Entities;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.UI;
 

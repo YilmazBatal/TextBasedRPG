@@ -1,4 +1,4 @@
-﻿namespace TextBasedRPG.Heroes
+﻿namespace TextBasedRPG.Core.Heroes
 {
     internal class Archer : Hero
     {

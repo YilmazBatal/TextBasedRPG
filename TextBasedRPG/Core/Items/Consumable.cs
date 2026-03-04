@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace TextBasedRPG.Items
+namespace TextBasedRPG.Core.Items
 {
     public class Consumable : Item
     {

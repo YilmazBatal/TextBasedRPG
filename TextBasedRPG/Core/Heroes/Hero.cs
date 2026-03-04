@@ -1,8 +1,9 @@
-﻿using TextBasedRPG.Interfaces;
+﻿using TextBasedRPG.Core.Items;
+using TextBasedRPG.Interfaces;
 using TextBasedRPG.Models;
 using TextBasedRPG.UI;
 
-namespace TextBasedRPG.Heroes
+namespace TextBasedRPG.Core.Heroes
 {
     public abstract class Hero : IDamageable
     {

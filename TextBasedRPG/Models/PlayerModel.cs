@@ -1,6 +1,4 @@
-﻿using TextBasedRPG.Managers.DataManagement;
-
-namespace TextBasedRPG.Models
+﻿namespace TextBasedRPG.Models
 {
     public class Player
     {

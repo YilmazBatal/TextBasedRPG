@@ -1,4 +1,4 @@
-﻿namespace TextBasedRPG
+﻿namespace TextBasedRPG.Core.Items
 {
     public class Armor : Item
     {

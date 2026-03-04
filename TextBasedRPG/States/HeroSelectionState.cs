@@ -1,4 +1,4 @@
-﻿using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Core.Heroes;
 using TextBasedRPG.Interfaces;
 using TextBasedRPG.Managers;
 using TextBasedRPG.UI;

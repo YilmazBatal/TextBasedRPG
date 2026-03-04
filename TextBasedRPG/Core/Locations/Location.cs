@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using TextBasedRPG.Entities;
+using TextBasedRPG.Core.Entities;
 using TextBasedRPG.Models;
 
-namespace TextBasedRPG.Locations
+namespace TextBasedRPG.Core.Locations
 {
     public class Location
     {

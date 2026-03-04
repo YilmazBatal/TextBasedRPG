@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using TextBasedRPG.Entities;
-using TextBasedRPG.Items;
-using TextBasedRPG.Locations;
+using TextBasedRPG.Core.Entities;
+using TextBasedRPG.Core.Items;
+using TextBasedRPG.Core.Locations;
 using TextBasedRPG.Models;
 using TextBasedRPG.UI;
 

@@ -1,6 +1,6 @@
 ﻿using TextBasedRPG.Interfaces;
 
-namespace TextBasedRPG.Entities
+namespace TextBasedRPG.Core.Entities
 {
     public abstract class Entity : IDamageable
     {

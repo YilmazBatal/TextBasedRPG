@@ -1,6 +1,6 @@
 ﻿using TextBasedRPG.Models;
 
-namespace TextBasedRPG
+namespace TextBasedRPG.Core.Items
 {
     public class Material : Item
     {

@@ -1,4 +1,5 @@
-﻿using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Core.Heroes;
+using TextBasedRPG.Core.Items;
 using TextBasedRPG.Models;
 
 namespace TextBasedRPG.Managers.DataManagement

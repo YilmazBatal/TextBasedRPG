@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using TextBasedRPG.Core.Items;
+using TextBasedRPG.Core.Locations;
 using TextBasedRPG.Events;
-using TextBasedRPG.Items;
-using TextBasedRPG.Locations;
 using TextBasedRPG.Models;
 using TextBasedRPG.UI;
 

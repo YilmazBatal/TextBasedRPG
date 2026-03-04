@@ -1,8 +1,8 @@
-﻿using TextBasedRPG.Entities;
-using TextBasedRPG.Heroes;
+﻿using TextBasedRPG.Core.Entities;
+using TextBasedRPG.Core.Heroes;
+using TextBasedRPG.Core.Items;
+using TextBasedRPG.Core.Locations;
 using TextBasedRPG.Interfaces;
-using TextBasedRPG.Items;
-using TextBasedRPG.Locations;
 using TextBasedRPG.States;
 
 namespace TextBasedRPG.Managers

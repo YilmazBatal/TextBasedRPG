@@ -1,5 +1,5 @@
-﻿using TextBasedRPG.Entities;
-using TextBasedRPG.Locations;
+﻿using TextBasedRPG.Core.Entities;
+using TextBasedRPG.Core.Locations;
 
 namespace TextBasedRPG.Managers
 {

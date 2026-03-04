@@ -1,6 +1,6 @@
-﻿namespace TextBasedRPG.Entities
+﻿namespace TextBasedRPG.Core.Entities
 {
-    internal class Boss : Entity
+    internal class Enemy : Entity
     {
         public override void Initialize(int playerLevel, int regionCap)
         {
