@@ -1,5 +1,7 @@
 ⚔️ Text-Based RPG Engine (v0.6)
 
+> **⚠️ Project Vision:** This is a high-performance **Core RPG Engine**. While currently running in a console environment for architectural testing, it is designed to be the backbone of a future **Unity-based UI RPG**. The logic (calculations, data, inventory) is strictly decoupled from the UI, making it ready for a seamless visual transition.
+
 A robust, modular, and scalable **RPG Game Engine** built entirely with C#. This project is not just a game, but a demonstration of complex software architecture including custom data management, dynamic combat math, and a state-based navigation system.
 
 ## 🎮 Core Gameplay Systems (What's Ready?)
