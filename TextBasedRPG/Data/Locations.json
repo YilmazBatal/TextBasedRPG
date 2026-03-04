@@ -45,6 +45,11 @@
         "You found a stream flowing uphill. You decided not to question it. Physics is hard today.",
         "A giant leaf fell from the canopy. It’s now your new, slightly damp blanket. Cozy!",
         "You reached a clearing where the sunlight feels like a warm hug. Then a squirrel threw an acorn at your head. Nature is balanced."
+    ],
+    "AdventureLoots": [
+        { "ID": "M0001", "DropChance": 50, "MaxAmount": 3 },
+        { "ID": "M0002", "DropChance": 43, "MaxAmount": 2 },
+        { "ID": "W0001", "DropChance": 7, "MaxAmount": 1 }
     ]
   },
   {
@@ -90,6 +95,11 @@
       "You stared into the abyss. The abyss blinked first. Score one for the player!",
       "The whistling wind sounds suspiciously like the developer humming while coding this.",
       "You found a chest! It was empty, but it had a very nice personality."
+    ],
+    "AdventureLoots": [
+        { "ID": "M0003", "DropChance": 80, "MaxAmount": 5 },
+        { "ID": "A0002", "DropChance": 10, "MaxAmount": 1 },
+        { "ID": "W0002", "DropChance": 10, "MaxAmount": 1 }
     ]
   },
   {
@@ -109,6 +119,12 @@
         "You found a rusted helmet hanging on a branch. A squirrel is using it as a high-end apartment.",
         "The trees here have very long 'fingers'. One of them just tried to fix your hair.",
         "You realized the 'wind' is actually the forest breathing. It has terrible morning breath."
+    ],
+    "AdventureLoots": [
+        { "ID": "M0003", "DropChance": 45, "MaxAmount": 3 },
+        { "ID": "M0004", "DropChance": 45, "MaxAmount": 5 },
+        { "ID": "A0003", "DropChance": 5, "MaxAmount": 1 },
+        { "ID": "W0002", "DropChance": 5, "MaxAmount": 1 }
     ]
   }
 ]
