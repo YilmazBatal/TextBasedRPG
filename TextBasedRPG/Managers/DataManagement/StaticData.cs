@@ -2,6 +2,7 @@
 using TextBasedRPG.Core.Entities;
 using TextBasedRPG.Core.Items;
 using TextBasedRPG.Core.Locations;
+using TextBasedRPG.Core.Shops;
 using TextBasedRPG.Models;
 using TextBasedRPG.UI;
 
@@ -15,6 +16,7 @@ namespace TextBasedRPG.Managers.DataManagement
         private static readonly string _armorsPath = "../../../Data/Armors.json";
         private static readonly string _materialsPath = "../../../Data/Materials.json";
         private static readonly string _consumablesPath = "../../../Data/Consumables.json";
+        private static readonly string _shopsPath = "../../../Data/Shops.json";
 
         public static void LoadStaticDatas(GameContext context)
         {
@@ -24,7 +26,9 @@ namespace TextBasedRPG.Managers.DataManagement
             LoadArmors(context);
             LoadMaterials(context);
             LoadConsumables(context);
+            LoadShops(context);
             context.InitializeMasterBook();
+            context.InitializeClassWeaponCheck();
         }
 
         private static void LoadLocations(GameContext context)
@@ -257,6 +261,35 @@ namespace TextBasedRPG.Managers.DataManagement
                         data.CombatItem
                     );
                     context.Consumables.Add(mappedConsumable);
+                }
+            }
+        }
+        private static void LoadShops(GameContext context)
+        {
+            string path = _shopsPath;
+
+            if (!File.Exists(path))
+            {
+                MenuUI.ColoredMsg(ConsoleColor.Red, $"[ERROR] File not found! Path: {Path.GetFullPath(path)}");
+                context.Shops = new List<Shop>();
+                return;
+            }
+
+            string jsonString = File.ReadAllText(path);
+
+            List<ShopData>? loadedData = JsonSerializer.Deserialize<List<ShopData>>(jsonString);
+
+            if (loadedData != null)
+            {
+                context.Shops = new List<Shop>();
+                foreach (var shop in loadedData)
+                {
+                    Shop mappedShop = new Shop(
+                         shop.ID,
+                         shop.ShopName,
+                         shop.Items
+                    );
+                    context.Shops?.Add(mappedShop);
                 }
             }
         }

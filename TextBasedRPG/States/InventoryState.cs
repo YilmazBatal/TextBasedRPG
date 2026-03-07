@@ -9,7 +9,7 @@ namespace TextBasedRPG.States
         public GameState Update(GameContext context)
         {
             Console.Clear();
-            MenuUI.BackpackPagination(context);
+            InventoryUI.BackpackPagination(context);
             return GameState.MainMenu;
         }
 
